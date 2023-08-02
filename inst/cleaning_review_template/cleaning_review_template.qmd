@@ -1,0 +1,427 @@
+---
+title: Data cleaning checks
+subtitle: version 2.0.0.
+date: today
+date-format: "DD MMMM YYYY"
+format:
+  html:
+    code-fold: true
+    css: utils/css/styles.css
+---
+
+::: {.panel-tabset .column-page-right}
+# Read me 
+
+This review is separated into two parts *Data checks* and *Cleaning log*:  
+- The first part will performed different check on the dataset, depending on the information available 
+(time, outliers, shortest path, etc.).  
+- The second part will look at how the cleaning was performed. It will first look if the values from the
+cleaning log are correctly changed in the clean data, and then it will look at differences between the 
+raw data and clean data and see if anything was not logged into the cleaning log.  
+<br />
+
+The summary can be found in the output folder.
+```{r load libraries and functions}
+#| message: false
+#| warning: false
+library(tidyverse)
+library(impacttemplates)
+library(cleaningtools)
+```
+
+
+```{r reading config file}
+#| message: false
+#| warning: false
+source("inputs/config.R")
+```
+
+
+```{r load datasets and parameters}
+#| message: false
+#| warning: false
+# tests to include  TRUE / FALSE
+check_for_duplicates <- TRUE
+check_for_soft_duplicates <- TRUE
+check_for_PII <- TRUE
+check_for_time <- FALSE
+check_for_shortest_path <- TRUE
+check_for_outliers <- TRUE
+check_for_logical <- FALSE
+check_for_others <- TRUE
+check_for_NA_values <- TRUE
+check_for_deletions <- TRUE
+check_for_etc <- TRUE
+review_the_cleaning_log <- TRUE
+review_the_others_recoding <- FALSE
+review_the_sampling_frame <- TRUE
+```
+
+```{r}
+# modifying the cleaning log to create xx
+if (!change_type_column %in% names(logg)) {
+  logg <- logg |>
+    dplyr::mutate(!!dplyr::sym(change_type_column) := dplyr::case_when(
+      is.na(!!dplyr::sym(new_value_logg)) | !!(dplyr::sym(new_value_logg) == "NA") ~ "blank_response",
+      !!dplyr::sym(new_value_logg) == !!dplyr::sym(old_value_logg) ~ "no_action",
+      !!dplyr::sym(new_value_logg) != !!dplyr::sym(old_value_logg) ~ "change_response",
+      TRUE ~ "cannot identify the action"
+    ))
+}
+
+# logg[logg == "NA"] <- NA_character_
+# add_duration
+
+list_log <- cleann
+review_log <- list()
+```
+
+
+# 1. Data checks
+
+::: {.panel-tabset .column-page-right}
+## Checks for duplicates 
+
+```{r check duplicates} 
+if (check_for_duplicates) {
+  list_log <- check_duplicate(list_log, uuid_cleann)
+
+  print_log(list_log$duplicate_log, "No duplicates found")
+}
+```
+:::{.callout-note}
+This checks duplicates of uuid
+:::
+
+## Checks for soft duplicates
+
+```{r check soft duplicates}
+if (check_for_soft_duplicates) {
+  list_log <- check_soft_duplicates(list_log,
+    kobo_survey = questions,
+    uuid = uuid_cleann,
+    idnk_value = "idnk",
+    sm_seperator = ".",
+    threshold = 7
+  )
+  list_log$soft_duplicate_log <- list_log$soft_duplicate_log |>
+    dplyr::filter(!is.na(issue))
+
+  # fix wrong names uuid
+  if (names(list_log$soft_duplicate_log)[1] != "uuid") {
+    names(list_log$soft_duplicate_log)[1] <- "uuid"
+  }
+
+  print_log(list_log$soft_duplicate_log, "No duplicates found")
+}
+```
+
+## Checks for PII
+
+*NOTE*:   
+- Only looks for some keywords in the names of the dataset.  
+- It does not check the value in those columns
+
+```{r check pii}
+#| message: false
+#| warning: false
+
+if (check_for_PII) {
+  list_log <- list_log |>
+    check_for_pii(element_name = "checked_dataset", uuid = uuid_cleann)
+
+  print_log(list_log$potential_PII, "No sensitive columns found")
+}
+```
+## Check for time
+```{r check time}
+#| warning: false
+lower_treshold <- 15
+higher_threshold <- 100
+
+if (check_for_time) {
+  list_log$checked_dataset <- list_log$checked_dataset |>
+    add_duration(uuid = uuid_cleann)
+  list_log <- list_log |>
+    check_duration(
+      .col_to_check = "duration",
+      uuid_var = uuid_cleann,
+      lower_bound = lower_treshold,
+      higher_bound = higher_threshold
+    )
+
+  print_log(list_log$duration_log, "No time sensitive interviews found")
+}
+```
+<br />
+**Note**:  
+- Check time for lower threshold as `r lower_treshold` minutes and higher threshold as `r higher_threshold` minutes.
+
+## Check for shortest path
+
+```{r check shortest path}
+# take only select and integer to look at NA (removing text, dummies, notes, etc.)
+if (check_for_shortest_path) {
+  if (exists("questions")) {
+    list_log$checked_dataset <- list_log$checked_dataset |>
+      add_percentage_missing(
+        kobo_survey = questions,
+        type_to_include = c(
+          "integer",
+          # "date",
+          "text",
+          "select_one",
+          "select_multiple"
+        )
+      )
+  } else {
+    list_log$checked_dataset <- list_log$checked_dataset |>
+      add_percentage_missing()
+  }
+  list_log <- list_log |>
+    check_percentage_missing(uuid_var = uuid_cleann)
+  print_log(list_log$percentage_missing_log, "No time sensitive interviews found")
+}
+```
+## Check for outliers
+
+```{r check outliers}
+#| warning: false
+#| message: false
+#| output: false
+
+if (check_for_outliers) {
+  list_log <- cleaningtools::check_outliers(list_log,
+    uuid_col_name = uuid_cleann,
+    kobo_survey = questions,
+    kobo_choices = choices,
+    sm_sep = sm_separator
+  )
+}
+```
+
+
+```{r print check outliers}
+if (check_for_outliers) {
+  print_log(list_log$potential_outliers, "No outlier found")
+}
+```
+
+## Logical check 
+
+```{r, warning = F, message = F}
+if (check_for_logical) {
+  list_log <- list_log |>
+    check_for_logical_with_list(
+      uuid_var = uuid_cleann,
+      list_of_check = logical_check_list
+    )
+
+  print_log(list_log$potential_outliers, "No logical checks found")
+}
+```
+
+## Other and translation
+```{r check other}
+if (check_for_others) {
+  if (exists("questions")) {
+    text_oth <- questions |>
+      dplyr::filter(type == "text", name %in% names(cleann)) |>
+      dplyr::pull(name)
+  } else {
+    text_oth <- grep(pattern = "_oth|_other|_autre", x = names(cleann), value = T)
+  }
+  list_log <- list_log |>
+    check_others(
+      uuid = uuid_cleann,
+      var_list = text_oth
+    )
+}
+```
+<br />
+<br />
+This is all the values from text questions.  
+
+```{r check other print}
+if (check_for_others) {
+  list_log$other_log |>
+    dplyr::arrange(question, old_value) |>
+    knit_big_table()
+}
+```
+<br /> 
+<br />
+This is how many interviews per text question. 
+
+```{r check other per question}
+if (check_for_others) {
+  list_log$other_log |>
+    dplyr::group_by(question) |>
+    dplyr::tally(sort = T) |>
+    knit_big_table()
+}
+```
+<br />
+<br />
+The values which are identicals. 
+
+```{r check other per values}
+if (check_for_others) {
+  list_log$other_log |>
+    dplyr::group_by(old_value) |>
+    dplyr::tally(sort = T) |>
+    knit_big_table()
+}
+```
+
+## Check for NAs values
+
+```{r check for values}
+if (check_for_NA_values) {
+  values_to_check <- c(99, 999, 999, 88, 888, 888)
+
+  list_log <- list_log |>
+    check_for_value(
+      uuid_col_name = uuid_cleann,
+      values_to_look = values_to_check
+    )
+
+  # fix for check not adding issue
+  list_log$flaged_value$issue <- "Possible value to be changed to NA"
+
+  print_log(list_log$flaged_value, "No values found")
+}
+```
+
+This checks looks for the following values: `r values_to_check`
+
+
+
+## Deletions
+```{r check deletions}
+number_cleann_in_dell <- "Check not performed"
+number_dell_in_cleann <- "Check not performed"
+number_difference_raw_clean_del <- "Check not performed"
+
+if (check_for_deletions) {
+  data.frame(
+    n_raw = nrow(raww),
+    n_clean = nrow(cleann),
+    n_deleted = nrow(dell),
+    sum_clean_del = nrow(cleann) + nrow(dell)
+  )
+
+  number_cleann_in_dell <- cleann[[uuid_cleann]] %in% dell[[uuid_dell]] |> sum()
+  number_dell_in_cleann <- dell[[uuid_dell]] %in% cleann[[uuid_cleann]] |> sum()
+  number_difference_raw_clean_del <- abs(nrow(raww) - nrow(cleann) - nrow(dell))
+}
+```
+Difference between raw, clean and deletion log:  `r number_difference_raw_clean_del`  
+Number of uuid of clean in deleted : `r number_cleann_in_dell`  
+Number of uuid of deleted in clean : `r number_dell_in_cleann`  
+ 
+## Miscellaneous
+```{r checks miscellaneous}
+```
+
+:::
+
+# 2. Review of the cleaning 
+
+::: {.panel-tabset .column-page-right}
+
+## Review the cleaning
+
+The change_response column can only take the following values:
+
+|value|Definition|
+|-----|----------|
+|change_response|Change the response to new.value|
+|blank_response|Remove and NA the response|
+|remove_survey|Delete the survey|
+|`r no_action_value`|No action to take|
+
+
+```{r review cleaning log}
+#| echo: false
+#| warning: false
+#| message: false
+
+if (review_the_cleaning_log) {
+  review_log$review_cleaning <- review_cleaning_log(
+    raw_data = raww,
+    raw_data_uuid = uuid_raww,
+    clean_data = cleann,
+    clean_data_uuid = uuid_cleann,
+    cleaning_log = logg,
+    cleaning_log_uuid = uuid_logg,
+    cleaning_log_change_type_column = change_type_column,
+    cleaning_log_question_name = var_logg,
+    cleaning_log_new_value = new_value_logg,
+    cleaning_log_old_value = old_value_logg,
+    cleaning_log_added_survey = "added_survey",
+    cleanning_log_no_action_value = no_action_value,
+    deletion_log = dell,
+    deletion_log_uuid = uuid_dell,
+    check_for_deletion_log = T
+  )
+}
+```
+
+This is the summary of the review of the cleaning log.
+```{r print review cleaning log}
+if (review_the_cleaning_log) {
+  review_log$review_cleaning |>
+    dplyr::group_by(comment) |>
+    dplyr::tally()
+}
+```
+
+## Review of others re-coding
+```{r Review of others re-coding}
+if (review_the_others_recoding) {
+  review_log$review_the_others_log <- review_others(cleann,
+    uuid = uuid_cleann,
+    kobo_survey = questions,
+    sm_sep = sm_separator
+  )
+}
+```
+
+
+## Review of the data and sampling frame
+```{r Review of the data and sampling frame}
+if (review_the_sampling_frame) {
+  review_log$review_sf <- review_sample_frame_with_dataset(
+    sample_frame = sampling_frame,
+    sample_frame_strata_col = sample_frame_strata_column,
+    sample_frame_target_survey_col = sample_frame_target_survey_column,
+    clean_data = cleann,
+    clean_data_strata_column = clean_data_strata_column,
+    consent_column = clean_data_consent_column,
+    value_for_consent_yes = clean_data_consent_yes_value
+  )
+
+  review_log$review_sf
+}
+```
+
+## Miscellaneous
+```{r review miscellaneous}
+```
+
+:::
+
+# 4. Wrap-up
+
+The datasets with added values, the checks and the reviews can be found in output folder.
+
+```{r wrap-up}
+all_logs <- create_combined_log(list_log) |>
+  append(review_log)
+
+openxlsx2::write_xlsx(all_logs, file = "outputs/review.xlsx", overwrite = T, na.strings = "")
+```
+
+
+:::
