@@ -33,7 +33,7 @@ library(cleaningtools)
 ```{r reading config file}
 #| message: false
 #| warning: false
-source("inputs/config.R")
+source("utils/config.R")
 ```
 
 
