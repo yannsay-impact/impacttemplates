@@ -222,6 +222,7 @@ if (check_for_logical) {
 ```
 
 ## Other and translation
+If a KOBO tool is provided, it will check all text columns. If there is no KOBO tools, it will check columns ending with "_oth, _other,_autre".
 ```{r check other}
 if (check_for_others) {
   if (exists("questions")) {
@@ -295,9 +296,9 @@ if (check_for_NA_values) {
 
 This checks looks for the following values: `r values_to_check`
 
-
-
 ## Deletions
+
+Verify the number of uuids that are common in clean dataset and deletion log.
 ```{r check deletions}
 number_cleann_in_dell <- "Check not performed"
 number_dell_in_cleann <- "Check not performed"
@@ -316,7 +317,7 @@ if (check_for_deletions) {
   number_difference_raw_clean_del <- abs(nrow(raww) - nrow(cleann) - nrow(dell))
 }
 ```
-Difference between raw, clean and deletion log:  `r number_difference_raw_clean_del`  
+Difference between of rows between the raw, clean and deletion log:  `r number_difference_raw_clean_del`  
 Number of uuid of clean in deleted : `r number_cleann_in_dell`  
 Number of uuid of deleted in clean : `r number_dell_in_cleann`  
  

@@ -4,6 +4,8 @@
 # impacttemplates
 
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/impact-initiatives/impacttemplates/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/impact-initiatives/impacttemplates/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 The goal of impacttemplates is to create R project from templates for

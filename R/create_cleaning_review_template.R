@@ -14,5 +14,4 @@ create_cleaning_review_template <- function(path, ...) {
   from <- system.file("cleaning_review_template", package = "impacttemplates")
 
   fs::dir_copy(from, path, overwrite = FALSE)
-
 }

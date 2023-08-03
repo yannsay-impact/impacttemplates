@@ -20,4 +20,8 @@ Suggests:
     cleaningtools,
     dplyr,
     openxlsx2,
-    readxl
+    quarto,
+    readxl,
+    testthat (>= 3.0.0),
+    withr
+Config/testthat/edition: 3
