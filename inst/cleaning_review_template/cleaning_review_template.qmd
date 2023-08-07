@@ -212,7 +212,7 @@ if (check_for_outliers) {
 ```{r, warning = F, message = F}
 if (check_for_logical) {
   list_log <- list_log |>
-    check_for_logical_with_list(
+    check_logical_with_list(
       uuid_var = uuid_cleann,
       list_of_check = logical_check_list
     )
