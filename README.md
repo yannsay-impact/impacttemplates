@@ -5,6 +5,9 @@
 
 <!-- badges: start -->
 
+[![Contributor
+Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md)
+
 [![R-CMD-check](https://github.com/impact-initiatives/impacttemplates/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/impact-initiatives/impacttemplates/actions/workflows/R-CMD-check.yaml)
 
 <!-- badges: end -->
