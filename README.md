@@ -6,6 +6,7 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/impact-initiatives/impacttemplates/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/impact-initiatives/impacttemplates/actions/workflows/R-CMD-check.yaml)
+
 <!-- badges: end -->
 
 The goal of impacttemplates is to create R project from templates for
@@ -79,3 +80,10 @@ Don’t forget to save.
 <img src="man/figures/05%20-%20html%20output.png" width="500" />
 
 <img src="man/figures/06%20-%20excel%20output.png" width="500" />
+
+## Code of Conduct
+
+Please note that the impacttemplates project is released with a
+[Contributor Code of
+Conduct](https://impact-initiatives.github.io/impacttemplates/CODE_OF_CONDUCT.html).
+By contributing to this project, you agree to abide by its terms.
