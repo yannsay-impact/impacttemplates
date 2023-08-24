@@ -1,12 +1,11 @@
 Package: impacttemplates
-Title: What the Package Does (One Line, Title Case)
+Title: Adds project templates.
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+    person("Yann", "Say",  email= "yann.say@impact-initiatives.org",role = c("cre","aut"),
+           comment = c(ORCID = "0000-0002-7390-4209"))
+Description: Adds templates from IMPACT Initiatives R ecosystem to project wizards in R Studio.
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
@@ -25,3 +24,4 @@ Suggests:
     testthat (>= 3.0.0),
     withr
 Config/testthat/edition: 3
+URL: https://impact-initiatives.github.io/impacttemplates/
