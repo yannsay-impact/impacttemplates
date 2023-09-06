@@ -30,15 +30,14 @@ devtools::install_github("impact-initiatives/impacttemplates")
 - Once installed, some project templates will be available in R Studio
   Project Wizard.
 
-<img src="man/figures/01%20-%20Create%20project.png" width="500" />
+<img src="man/figures/01-createproject.png" width="500" />
 
 ### Cleaning review template
 
 - If you select Cleaning review template, you need to give the name of
   the project folder and the subdirectory of it.
 
-[<img
-src="man/figures/02%20-%20Create%20Cleaning%20review%20template.png"
+[<img src="man/figures/02-createcleaningreviewtemplate.png"
 width="500" />](Create%20a%20cleaning%20review%20template)
 
 - This will create a new folder with your project. It opens a
@@ -63,7 +62,7 @@ width="500" />](Create%20a%20cleaning%20review%20template)
 
 Don’t forget to save.
 
-<img src="man/figures/03%20-%20New%20project.png" width="500" />
+<img src="man/figures/03-newproject.png" width="500" />
 
 - There is then a quarto file **cleaning_review_template.qmd**
 
@@ -73,16 +72,16 @@ Don’t forget to save.
     FALSE). You can add or remove either if you want just to check
     quickly something or because the template/functions are not working.
 
-<img src="man/figures/04%20-%20quarto%20file.png" width="500" />
+<img src="man/figures/04-quarto.png" width="500" />
 
 - Once render, this will create an html output that you can navigate to
   read the results of the checks and review. It will also write an excel
   file in your outputs folder with the clean dataset reviewed and any
   indicators added, all the checks, and review.
 
-<img src="man/figures/05%20-%20html%20output.png" width="500" />
+<img src="man/figures/05-htmloutput.png" width="500" />
 
-<img src="man/figures/06%20-%20excel%20output.png" width="500" />
+<img src="man/figures/06-exceloutput.png" width="500" />
 
 ## Code of Conduct
 

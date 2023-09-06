@@ -1,6 +1,6 @@
 ---
 title: Data cleaning checks
-subtitle: version 2.0.0.
+subtitle: version 2.0.1.
 date: today
 date-format: "DD MMMM YYYY"
 format:
@@ -44,16 +44,16 @@ source("utils/config.R")
 check_for_duplicates <- TRUE
 check_for_soft_duplicates <- TRUE
 check_for_PII <- TRUE
-check_for_time <- FALSE
+check_for_time <- TRUE
 check_for_shortest_path <- TRUE
 check_for_outliers <- TRUE
-check_for_logical <- FALSE
+check_for_logical <- TRUE
 check_for_others <- TRUE
 check_for_NA_values <- TRUE
 check_for_deletions <- TRUE
 check_for_etc <- TRUE
 review_the_cleaning_log <- TRUE
-review_the_others_recoding <- FALSE
+review_the_others_recoding <- TRUE
 review_the_sampling_frame <- TRUE
 ```
 
@@ -84,7 +84,7 @@ review_log <- list()
 
 ```{r check duplicates} 
 if (check_for_duplicates) {
-  list_log <- check_duplicate(list_log, uuid_cleann)
+  list_log <- check_duplicate(dataset = list_log, uuid_column = uuid_cleann)
 
   print_log(list_log$duplicate_log, "No duplicates found")
 }
@@ -97,11 +97,12 @@ This checks duplicates of uuid
 
 ```{r check soft duplicates}
 if (check_for_soft_duplicates) {
-  list_log <- check_soft_duplicates(list_log,
+  list_log <- check_soft_duplicates(
+    dataset = list_log,
     kobo_survey = questions,
-    uuid = uuid_cleann,
+    uuid_column = uuid_cleann,
     idnk_value = "idnk",
-    sm_seperator = ".",
+    sm_seperator = sm_separator,
     threshold = 7
   )
   list_log$soft_duplicate_log <- list_log$soft_duplicate_log |>
@@ -112,7 +113,7 @@ if (check_for_soft_duplicates) {
     names(list_log$soft_duplicate_log)[1] <- "uuid"
   }
 
-  print_log(list_log$soft_duplicate_log, "No duplicates found")
+  print_log(list_log$soft_duplicate_log, "No soft duplicates found")
 }
 ```
 
@@ -128,7 +129,7 @@ if (check_for_soft_duplicates) {
 
 if (check_for_PII) {
   list_log <- list_log |>
-    check_for_pii(element_name = "checked_dataset", uuid = uuid_cleann)
+    check_pii(element_name = "checked_dataset", uuid_column = uuid_cleann)
 
   print_log(list_log$potential_PII, "No sensitive columns found")
 }
@@ -141,11 +142,13 @@ higher_threshold <- 100
 
 if (check_for_time) {
   list_log$checked_dataset <- list_log$checked_dataset |>
-    add_duration(uuid = uuid_cleann)
+    add_duration(uuid_column  = uuid_cleann, 
+                 start_column = "X.U.FEFF.start", 
+                 end_column = "end")
   list_log <- list_log |>
     check_duration(
-      .col_to_check = "duration",
-      uuid_var = uuid_cleann,
+      column_to_check = "duration",
+      uuid_column  = uuid_cleann,
       lower_bound = lower_treshold,
       higher_bound = higher_threshold
     )
@@ -179,7 +182,7 @@ if (check_for_shortest_path) {
       add_percentage_missing()
   }
   list_log <- list_log |>
-    check_percentage_missing(uuid_var = uuid_cleann)
+    check_percentage_missing(uuid_column = uuid_cleann)
   print_log(list_log$percentage_missing_log, "No time sensitive interviews found")
 }
 ```
@@ -191,11 +194,11 @@ if (check_for_shortest_path) {
 #| output: false
 
 if (check_for_outliers) {
-  list_log <- cleaningtools::check_outliers(list_log,
-    uuid_col_name = uuid_cleann,
+  list_log <- cleaningtools::check_outliers(dataset = list_log,
+    uuid_column  = uuid_cleann,
     kobo_survey = questions,
     kobo_choices = choices,
-    sm_sep = sm_separator
+    sm_seperator = sm_separator
   )
 }
 ```
@@ -213,11 +216,15 @@ if (check_for_outliers) {
 if (check_for_logical) {
   list_log <- list_log |>
     check_logical_with_list(
-      uuid_var = uuid_cleann,
-      list_of_check = logical_check_list
+      uuid_column  = uuid_cleann,
+      list_of_check = logical_check_list, 
+      check_id_column = check_id_column, 
+      description_column = description_column,
+      check_to_perform_column = check_to_perform_column,
+      columns_to_clean_column = columns_to_clean_column
     )
 
-  print_log(list_log$potential_outliers, "No logical checks found")
+  print_log(list_log$logical_all, "No logical checks found")
 }
 ```
 
@@ -234,8 +241,8 @@ if (check_for_others) {
   }
   list_log <- list_log |>
     check_others(
-      uuid = uuid_cleann,
-      var_list = text_oth
+      uuid_column = uuid_cleann,
+      columns_to_check = text_oth
     )
 }
 ```
@@ -282,8 +289,8 @@ if (check_for_NA_values) {
   values_to_check <- c(99, 999, 999, 88, 888, 888)
 
   list_log <- list_log |>
-    check_for_value(
-      uuid_col_name = uuid_cleann,
+    check_value( 
+      uuid_column = uuid_cleann,
       values_to_look = values_to_check
     )
 
@@ -343,34 +350,34 @@ The change_response column can only take the following values:
 |`r no_action_value`|No action to take|
 
 
-```{r review cleaning log}
+```{r review cleaning}
 #| echo: false
 #| warning: false
 #| message: false
 
 if (review_the_cleaning_log) {
   review_log$review_cleaning <- review_cleaning_log(
-    raw_data = raww,
-    raw_data_uuid = uuid_raww,
-    clean_data = cleann,
-    clean_data_uuid = uuid_cleann,
+    raw_dataset = raww,
+    raw_dataset_uuid_column = uuid_raww,
+    clean_dataset = cleann,
+    clean_dataset_uuid_column = uuid_cleann,
     cleaning_log = logg,
-    cleaning_log_uuid = uuid_logg,
+    cleaning_log_uuid_column = uuid_logg,
     cleaning_log_change_type_column = change_type_column,
-    cleaning_log_question_name = var_logg,
-    cleaning_log_new_value = new_value_logg,
-    cleaning_log_old_value = old_value_logg,
-    cleaning_log_added_survey = "added_survey",
-    cleanning_log_no_action_value = no_action_value,
+    cleaning_log_question_column = var_logg,
+    cleaning_log_new_value_column = new_value_logg,
+    cleaning_log_old_value_column = old_value_logg,
+    cleaning_log_added_survey_value = "added_survey",
+    cleaning_log_no_change_value = no_action_value,
     deletion_log = dell,
-    deletion_log_uuid = uuid_dell,
+    deletion_log_uuid_column = uuid_dell,
     check_for_deletion_log = T
   )
 }
 ```
 
-This is the summary of the review of the cleaning log.
-```{r print review cleaning log}
+This is the summary of the review of the cleaning.
+```{r print review cleaning}
 if (review_the_cleaning_log) {
   review_log$review_cleaning |>
     dplyr::group_by(comment) |>
@@ -381,26 +388,33 @@ if (review_the_cleaning_log) {
 ## Review of others re-coding
 ```{r Review of others re-coding}
 if (review_the_others_recoding) {
-  review_log$review_the_others_log <- review_others(cleann,
-    uuid = uuid_cleann,
+  review_log$review_the_others_log <- review_others(dataset = cleann,
+    uuid_column = uuid_cleann,
     kobo_survey = questions,
-    sm_sep = sm_separator
+    sm_seperator = sm_separator
   )
 }
 ```
-
+This is the summary of the review of the text correction.
+```{r print review cleaning log}
+if (review_the_others_recoding) {
+  review_log$review_the_others_log |>
+    dplyr::group_by(issue) |>
+    dplyr::tally()
+}
+```
 
 ## Review of the data and sampling frame
 ```{r Review of the data and sampling frame}
 if (review_the_sampling_frame) {
   review_log$review_sf <- review_sample_frame_with_dataset(
     sample_frame = sampling_frame,
-    sample_frame_strata_col = sample_frame_strata_column,
-    sample_frame_target_survey_col = sample_frame_target_survey_column,
-    clean_data = cleann,
-    clean_data_strata_column = clean_data_strata_column,
+    sampling_frame_strata_column = sample_frame_strata_column,
+    sampling_frame_target_survey_column = sample_frame_target_survey_column,
+    clean_dataset = cleann,
+    clean_dataset_strata_column = clean_data_strata_column,
     consent_column = clean_data_consent_column,
-    value_for_consent_yes = clean_data_consent_yes_value
+    consent_yes_value = clean_data_consent_yes_value
   )
 
   review_log$review_sf
@@ -413,7 +427,7 @@ if (review_the_sampling_frame) {
 
 :::
 
-# 4. Wrap-up
+# 3. Wrap-up
 
 The datasets with added values, the checks and the reviews can be found in output folder.
 
