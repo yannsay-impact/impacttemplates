@@ -3,7 +3,7 @@ test_that("Test that folders strucure is correct", {
 
   create_cleaning_review_template(temp_dir_to_test)
 
-  exact_test_folder <- paste0(temp_dir_to_test, "\\cleaning_review_template\\")
+  exact_test_folder <- paste0(temp_dir_to_test, "/cleaning_review_template/")
 
   expect_equal(list.files(exact_test_folder),
                c("cleaning_review_template.qmd", "inputs", "outputs", "utils"))
@@ -15,7 +15,7 @@ test_that("Test that outputs is the same", {
 
   create_cleaning_review_template(temp_dir_to_test)
 
-  exact_test_folder <- paste0(temp_dir_to_test, "\\cleaning_review_template\\")
+  exact_test_folder <- paste0(temp_dir_to_test, "/cleaning_review_template/")
 
   quarto::quarto_render(paste0(exact_test_folder, "cleaning_review_template.qmd"))
   expect_snapshot_file(paste0(exact_test_folder, "cleaning_review_template.html"), "cleaning_review_template.html")
