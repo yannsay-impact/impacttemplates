@@ -1,6 +1,6 @@
 Package: impacttemplates
 Title: Adds project templates
-Version: 0.0.0.9000
+Version: 0.0.0.9001
 Authors@R: 
     person("Yann", "Say",  email= "yann.say@impact-initiatives.org",role = c("cre","aut"),
            comment = c(ORCID = "0000-0002-7390-4209"))
