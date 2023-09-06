@@ -11,17 +11,6 @@ logg <- cleaningtools::cleaningtools_cleaning_log |>
 dell <- cleaningtools::cleaningtools_cleaning_log |>
   dplyr::filter(change_type == "remove_survey")
 
-# KOBO survey and choices
-questions <- cleaningtools::cleaningtools_survey
-choices <- cleaningtools::cleaningtools_choices
-
-# Sampling frame
-sampling_frame <- cleaningtools::cleaningtools_sample_frame
-
-# Logical checks list
-# logical_check_list <- readxl::read_excel("inputs/check_list.xlsx")
-
-
 # uuid for the different datasets
 uuid_raww <- "X_uuid"
 uuid_cleann <- "X_uuid"
@@ -35,8 +24,24 @@ new_value_logg <- "new_value"
 change_type_column <- "change_type"
 no_action_value <- "no_action"
 
+# KOBO survey and choices
+questions <- cleaningtools::cleaningtools_survey
+choices <- cleaningtools::cleaningtools_choices
+
 # select multiple separator
 sm_separator = "."
+
+# Logical checks list
+logical_check_list <- read.csv("inputs/check_list.csv")
+
+# Logical checks list information
+check_id_column <- "check_id"
+description_column <- "description"
+check_to_perform_column <- "check_to_perform"
+columns_to_clean_column <- "columns_to_clean"
+
+# Sampling frame
+sampling_frame <- cleaningtools::cleaningtools_sample_frame
 
 # sampling frame information
 sample_frame_strata_column <- "Neighbourhood"
