@@ -17,6 +17,7 @@ Remotes:
     impact-initiatives/cleaningtools
 Suggests:
     cleaningtools,
+    covr,
     dplyr,
     openxlsx2,
     quarto,
