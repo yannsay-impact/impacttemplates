@@ -70,7 +70,10 @@ if (!change_type_column %in% names(logg)) {
 }
 
 # logg[logg == "NA"] <- NA_character_
-# add_duration
+
+# possible fix for start&end
+# cleann$new_start = lubridate::ymd_hms(cleann[["start"]])
+# cleann$new_time = lubridate::ymd_hms(cleann[["end"]])
 
 list_log <- cleann
 review_log <- list()
@@ -102,16 +105,10 @@ if (check_for_soft_duplicates) {
     kobo_survey = questions,
     uuid_column = uuid_cleann,
     idnk_value = "idnk",
-    sm_seperator = sm_separator,
+    sm_separator = sm_separator,
     threshold = 7
   )
-  list_log$soft_duplicate_log <- list_log$soft_duplicate_log |>
-    dplyr::filter(!is.na(issue))
-
-  # fix wrong names uuid
-  if (names(list_log$soft_duplicate_log)[1] != "uuid") {
-    names(list_log$soft_duplicate_log)[1] <- "uuid"
-  }
+  list_log$soft_duplicate_log <- list_log$soft_duplicate_log
 
   print_log(list_log$soft_duplicate_log, "No soft duplicates found")
 }
@@ -129,11 +126,18 @@ if (check_for_soft_duplicates) {
 
 if (check_for_PII) {
   list_log <- list_log |>
-    check_pii(element_name = "checked_dataset", uuid_column = uuid_cleann)
-
+    check_pii(uuid_column = uuid_cleann)
+  
   print_log(list_log$potential_PII, "No sensitive columns found")
 }
 ```
+
+```{r}
+  cleann %>% 
+    select(any_of(list_log$potential_PII$question)) %>% 
+    lapply(unique)
+```
+
 ## Check for time
 ```{r check time}
 #| warning: false
@@ -183,7 +187,7 @@ if (check_for_shortest_path) {
   }
   list_log <- list_log |>
     check_percentage_missing(uuid_column = uuid_cleann)
-  print_log(list_log$percentage_missing_log, "No time sensitive interviews found")
+  print_log(list_log$percentage_missing_log, "No survey with outstanding blanks found")
 }
 ```
 ## Check for outliers
@@ -198,7 +202,7 @@ if (check_for_outliers) {
     uuid_column  = uuid_cleann,
     kobo_survey = questions,
     kobo_choices = choices,
-    sm_seperator = sm_separator
+    sm_separator = sm_separator
   )
 }
 ```
@@ -224,8 +228,20 @@ if (check_for_logical) {
       columns_to_clean_column = columns_to_clean_column
     )
 
-  print_log(list_log$logical_all, "No logical checks found")
+  list_log$checked_dataset %>% 
+    summarise(across(.cols = any_of(logical_check_list[[check_id_column]]), .fns = ~mean(.x, na.rm = T) *100)) %>% 
+    pivot_longer(cols = everything()) %>% 
+    arrange(desc(value)) %>% 
+    rename(logical_checks = name, 
+           percent_of_dataset = value)
+
 }
+```
+Details can be see here
+```{r, warning = F, message = F}
+
+  print_log(list_log$logical_all, "No logical checks found")
+
 ```
 
 ## Other and translation
@@ -356,7 +372,7 @@ The change_response column can only take the following values:
 #| message: false
 
 if (review_the_cleaning_log) {
-  review_log$review_cleaning <- review_cleaning_log(
+  review_log$review_cleaning <- review_cleaning(
     raw_dataset = raww,
     raw_dataset_uuid_column = uuid_raww,
     clean_dataset = cleann,
@@ -391,7 +407,7 @@ if (review_the_others_recoding) {
   review_log$review_the_others_log <- review_others(dataset = cleann,
     uuid_column = uuid_cleann,
     kobo_survey = questions,
-    sm_seperator = sm_separator
+    sm_separator = sm_separator
   )
 }
 ```
