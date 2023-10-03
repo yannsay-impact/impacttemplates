@@ -12,10 +12,10 @@ dell <- cleaningtools::cleaningtools_cleaning_log |>
   dplyr::filter(change_type == "remove_survey")
 
 # uuid for the different datasets
-uuid_raww <- "X_uuid"
-uuid_cleann <- "X_uuid"
-uuid_logg <- "X_uuid"
-uuid_dell <- "X_uuid"
+uuid_raww <- detect_uuid(raww)
+uuid_cleann <- detect_uuid(cleann)
+uuid_logg <- detect_uuid(logg)
+uuid_dell <- detect_uuid(dell)
 
 # names from the cleaning log
 var_logg <- "questions"
