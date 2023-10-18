@@ -9,11 +9,11 @@
 #' \dontrun{
 #' create_analysis_review_template("path/to/folder")
 #' }
-create_analysis_review_template <- function(path, ...) {
+create_analysis_review_template <- function(folder_path, ...) {
 
   from <- system.file("analysis_review_template", package = "impacttemplates")
-  fs::dir_copy(from, path, overwrite = FALSE)
+  fs::dir_copy(from, folder_path, overwrite = FALSE)
 
   from_css <- system.file("css", package = "impacttemplates")
-  fs::dir_copy(from_css, paste0(path, "\\analysis_review_template\\utils"), overwrite = FALSE)
+  fs::dir_copy(from_css, paste0(folder_path, "\\utils"), overwrite = FALSE)
 }
