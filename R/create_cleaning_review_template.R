@@ -12,6 +12,8 @@
 create_cleaning_review_template <- function(path, ...) {
 
   from <- system.file("cleaning_review_template", package = "impacttemplates")
-
   fs::dir_copy(from, path, overwrite = FALSE)
+
+  from_css <- system.file("css", package = "impacttemplates")
+  fs::dir_copy(from_css, paste0(path, "\\cleaning_review_template\\utils"), overwrite = FALSE)
 }

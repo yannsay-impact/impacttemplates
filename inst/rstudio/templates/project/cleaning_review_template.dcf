@@ -1,4 +1,4 @@
-Binding: create_cleaning_review_template
-Title: Cleaning review template
-OpenFiles: utils/config.R,cleaning_review_template.qmd
+Binding: create_analysis_review_template
+Title: Analysis review template
+OpenFiles: utils/config.R,analysis_review_template.qmd
 

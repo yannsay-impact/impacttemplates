@@ -1,0 +1,117 @@
+---
+title: Data analysis review
+subtitle: version 1.0.0.
+date: today
+date-format: "DD MMMM YYYY"
+format:
+  html:
+    code-fold: true
+    css: utils/css/styles.css
+    df-print: kable
+---
+
+::: {.panel-tabset .column-page-right}
+# Read me
+
+This review compares results from a results table to another one. The latter is generated will the **analysistools** and compared with review_variables from **addindicators**. The default stesp taken are:\
+- Creating a list of analysis (*loa*) from the results table (or a custom one)\
+- Reproducing the analysis from that *loa*.\
+- Bind the results table.\
+- Review the variables of interests.\
+- Print the summary.
+
+There are 4 possible results:
+
+|review_comment|Definition|
+|--------------|----------|
+|Same results|Same results| 
+|Different results|Different results (for numeric variable, it is rounding up to 4 digits)|
+|Missing in x|There is a missing value in the analysis to be reviewed while there is no missing value in the analysis that was reproduced|
+|Missing in y|There is a missing value in the analysis that was reproduced while there is no missing value in the analysis to be reviewed|
+
+The summary can be found in the output folder.
+
+```{r load libraries and functions}
+#| message: false
+#| warning: false
+library(tidyverse)
+library(impacttemplates)
+library(addindicators)
+library(analysistools)
+```
+
+```{r reading config file}
+#| message: false
+#| warning: false
+source("utils/config.R")
+```
+
+# Review of results
+
+## 1. Create loa
+
+```{r}
+review_loa <- create_loa_from_results(results_to_review, 
+                                      analysis_key_column = analysis_key_column)
+```
+
+## 2. Create analysis
+
+```{r}
+#| message: false
+#| warning: false
+review_analysis <- create_analysis(review_survey_design,
+                                   loa = review_loa,
+                                   sm_separator = sm_separator)
+```
+
+## 3. Bind
+
+```{r}
+binded_results <- results_to_review %>%
+  dplyr::full_join(review_analysis$results_table, by = setNames("analysis_key", analysis_key_column))
+```
+
+## 4. Review
+
+```{r}
+###TO BE UPDATED MANUALLY TO SELECT THE COLUMNS OF INTEREST
+analysis_review <- review_variables(binded_results, 
+                 columns_to_review = c("stat.x", "stat_low.x", "stat_upp.x"),
+                 columns_to_compare_with = c("stat.y", "stat_low.y", "stat_upp.y"))
+```
+
+## 5. Summary
+
+Proportion of same results in percent
+
+```{r}
+analysis_review$review_table %>%
+ dplyr::group_by(variable) %>%
+ dplyr::summarise(proportion_correct = mean(review_check)*100)
+```
+
+Details per variable
+
+```{r}
+analysis_review$review_table %>%
+ dplyr::group_by(variable, review_comment) %>%
+ dplyr::tally(sort = T)
+```
+
+# 4. Miscellaneous
+
+Anything extra can be added here
+
+```{r review miscellaneous}
+```
+
+# 3. Wrap-up
+
+The results with review and comments can be found in output folder.
+
+```{r wrap-up}
+openxlsx2::write_xlsx(analysis_review, file = "outputs/review.xlsx", overwrite = T, na.strings = "")
+```
+
+:::

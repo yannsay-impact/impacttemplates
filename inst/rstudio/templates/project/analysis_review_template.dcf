@@ -1,0 +1,4 @@
+Binding: create_cleaning_review_template
+Title: Cleaning review template
+OpenFiles: utils/config.R,cleaning_review_template.qmd
+
