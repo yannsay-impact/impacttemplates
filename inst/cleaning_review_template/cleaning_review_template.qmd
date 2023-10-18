@@ -1,5 +1,5 @@
 ---
-title: Data cleaning checks
+title: Data cleaning check and review
 subtitle: version 2.0.1.
 date: today
 date-format: "DD MMMM YYYY"
@@ -129,6 +129,10 @@ if (check_for_PII) {
     check_pii(uuid_column = uuid_cleann)
   
   print_log(list_log$potential_PII, "No sensitive columns found")
+  
+  cleann %>% 
+    select(any_of(list_log$potential_PII$question)) %>% 
+    lapply(unique)
 }
 ```
 

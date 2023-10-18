@@ -21,5 +21,3 @@ test_that("Test that outputs is the same", {
   expect_snapshot_file(paste0(exact_test_folder, "cleaning_review_template.html"), "cleaning_review_template.html")
 
 })
-
-

@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-10-03">
+<meta name="dcterms.date" content="2023-10-18">
 
-<title>Data cleaning checks</title>
+<title>Data cleaning check and review</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -84,7 +84,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Data cleaning checks</h1>
+<h1 class="title">Data cleaning check and review</h1>
 <p class="subtitle lead">version 2.0.1.</p>
 </div>
 
@@ -96,7 +96,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">03 October 2023</p>
+      <p class="date">18 October 2023</p>
     </div>
   </div>
   
@@ -164,12 +164,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co"># logg[logg == "NA"] &lt;- NA_character_</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co"># add_duration</span></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co"># df$starttime = ymd_hms(df[["start"]])</span></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co"># df$endtime = ymd_hms(df[["end"]])</span></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>list_log <span class="ot">&lt;-</span> cleann</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>review_log <span class="ot">&lt;-</span> <span class="fu">list</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co"># possible fix for start&amp;end</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co"># cleann$new_start = lubridate::ymd_hms(cleann[["start"]])</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co"># cleann$new_time = lubridate::ymd_hms(cleann[["end"]])</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>list_log <span class="ot">&lt;-</span> cleann</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>review_log <span class="ot">&lt;-</span> <span class="fu">list</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </div>
@@ -240,56 +241,267 @@ Note
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">check_pii</span>(<span class="at">uuid_column =</span> uuid_cleann)</span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print_log</span>(list_log<span class="sc">$</span>potential_PII, <span class="st">"No sensitive columns found"</span>)</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  cleann <span class="sc">%&gt;%</span> </span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="fu">any_of</span>(list_log<span class="sc">$</span>potential_PII<span class="sc">$</span>question)) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lapply</span>(unique)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output-display">
-<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:500px; ">
-<table class="lightable-paper table table-sm table-striped small" data-quarto-postprocess="true">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th" style="text-align: left; position: sticky; top: 0; background-color: #FFFFFF;">uuid</th>
-<th data-quarto-table-cell-role="th" style="text-align: left; position: sticky; top: 0; background-color: #FFFFFF;">question</th>
-<th data-quarto-table-cell-role="th" style="text-align: left; position: sticky; top: 0; background-color: #FFFFFF;">issue</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">all</td>
-<td style="text-align: left;">neighbourhood</td>
-<td style="text-align: left;">Potential PII</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">all</td>
-<td style="text-align: left;">water_supply_rest_neighbourhood</td>
-<td style="text-align: left;">Potential PII</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">all</td>
-<td style="text-align: left;">water_supply_other_neighbourhoods</td>
-<td style="text-align: left;">Potential PII</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">all</td>
-<td style="text-align: left;">water_supply_other_neighbourhoods_why</td>
-<td style="text-align: left;">Potential PII</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">all</td>
-<td style="text-align: left;">consent_telephone_number</td>
-<td style="text-align: left;">Potential PII</td>
-</tr>
-</tbody>
-</table>
-</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$neighbourhood
+ [1] "ofhfyt"        "ytjhfsd2"      "rfbv_1"        "oyt"          
+ [5] "cc"            "rfbv_3"        "Bx2"           "B1"           
+ [9] "B4"            "B3"            "r1"            "B2"           
+[13] "Bcccc"         "Bx1"           "frgdf"         "tr2"          
+[17] "tr4"           "tr3"           "Bccccccc_1"    "ghghg"        
+[21] "fdfddfdfdfd_1" "ftgtrh_1"      "ftgtrh_2"      "ytjhfsd1"     
+[25] "ytjhfsd3"      "Bccccccc_2"    "ethgfbfds"     "yttytyty"     
+[29] "rtrtrtr_2"     "rtrtrtr_1"     "c"             "Bdd2"         
+[33] "Bdd1"          "eewr"          "dddddddd"      "dgfd"         
+[37] "A2"            "A1"            "A3"            "A4"           
+[41] "hgh"           "sdddddds"     
 
+$water_supply_rest_neighbourhood
+[1] "somewhat_worse"  "stayed_same"     "much_worse"      "somewhat_better"
+[5] NA                "much_better"    
+
+$water_supply_other_neighbourhoods
+[1] "somewhat_worse"  "stayed_same"     "somewhat_better" "much_worse"     
+[5] "much_better"     NA               
+
+$water_supply_other_neighbourhoods_why
+  [1] "شبكه المياه الخاصه في المنطقه ضعيفه"                                                                                                                                                                                                                                                                                                                              
+  [2] NA                                                                                                                                                                                                                                                                                                                                                                 
+  [3] "مشروع الماء بعيد جدا"                                                                                                                                                                                                                                                                                                                                             
+  [4] "شبكة الماء سيئة جدا"                                                                                                                                                                                                                                                                                                                                              
+  [5] "شبكة الماء سيئه مشروع الماء بعيد"                                                                                                                                                                                                                                                                                                                                 
+  [6] "عدد ساعاات تجهيز الماء قليله جدا والبنى التحتية ل شبكة الماء سيئه كذالك"                                                                                                                                                                                                                                                                                          
+  [7] "بعد مشروع الماء عن الحي"                                                                                                                                                                                                                                                                                                                                          
+  [8] "تجهيز ماء ساعات قليل ب اضافه الي قله تجهيز الماء مره واحده في اسبوع"                                                                                                                                                                                                                                                                                              
+  [9] "عدم توفير مياه بالقدر الكافي"                                                                                                                                                                                                                                                                                                                                     
+ [10] "وذلك بسبب بعض التجاوزات واسباب اخرى لا اعرفها"                                                                                                                                                                                                                                                                                                                    
+ [11] "لان  المنطقه لا يوجد من يمثلها \r\nالمنطقه بعيده عن مشروع الماء \r\nالمنطقه تقع أطراف القضاء"                                                                                                                                                                                                                                                                     
+ [12] "بعد الحي عن مياه المصدر"                                                                                                                                                                                                                                                                                                                                          
+ [13] "لايوجد نيه واضحه لتحسين الماء في هذا الحي كذالك بعد الحي عن المشروع الرئسي"                                                                                                                                                                                                                                                                                       
+ [14] "الحي بعيد عن المشروع"                                                                                                                                                                                                                                                                                                                                             
+ [15] "ضغط ماء اقل لهذا الحي وبعده عن المشروع"                                                                                                                                                                                                                                                                                                                           
+ [16] "بعد المشروع عن الحي"                                                                                                                                                                                                                                                                                                                                              
+ [17] "لان منزلنا يقع في نهايه المنطقه ولا يصل إليها الماء بسهوله \r\nولا توجد واسطه لدينا لكي نحصل على الماء"                                                                                                                                                                                                                                                           
+ [18] "لا توجد واسطه \r\nقله ضغط الماء \r\nقله ايام التي يأتي فيها الماء"                                                                                                                                                                                                                                                                                                
+ [19] "توزيع غير منتظم بين الأحياء\r\n ولاتوجد واسطه"                                                                                                                                                                                                                                                                                                                    
+ [20] "لاتوجد واسطه ولايوجد من يمثل المنطقه\r\nوتوزيع المياه غير متتظم"                                                                                                                                                                                                                                                                                                  
+ [21] "تجهيز المياه لساعات قليله جدا\r\nولاتوجد واسطه\r\nولايوجد من يمثل المنطقه"                                                                                                                                                                                                                                                                                        
+ [22] "هناك غلط كبير في توزيع الماء على احياء تلعفر \r\nولا يوحد مساواة في التوزيع"                                                                                                                                                                                                                                                                                      
+ [23] "الماء ياتي ضعيف جدا \r\nولا يتم ضخ الماء بانتظام في انتظام"                                                                                                                                                                                                                                                                                                       
+ [24] "قله الضغط وتوزيع غير منتظم ولايوجد من يمثل المنطقه ولاتوجد واسطه"                                                                                                                                                                                                                                                                                                 
+ [25] "توزيع غير عادل ولاتوجد واسطه"                                                                                                                                                                                                                                                                                                                                     
+ [26] "لايوجد من يمثل المنطقه\r\nوتوزيع غير عادل \r\nوتجهيز قليل بالمياه"                                                                                                                                                                                                                                                                                                
+ [27] "مصادر الماء قليلة جدآ"                                                                                                                                                                                                                                                                                                                                            
+ [28] "بسبب قرب تلك الاحياء من الشبكة الرئيسية المغذية لتلعفر"                                                                                                                                                                                                                                                                                                           
+ [29] "دفع الماء ضعيف جدا\r\nوالتجهيز اقل من باقي المناطق"                                                                                                                                                                                                                                                                                                               
+ [30] "مستوى الدفع ضعيفه لأنها بعيده عن الخط الرئيسي"                                                                                                                                                                                                                                                                                                                    
+ [31] "عدم اهتمام واضح من قبل الدائرة لهذا الحي"                                                                                                                                                                                                                                                                                                                         
+ [32] "شبكة الماء سيئه جدآ"                                                                                                                                                                                                                                                                                                                                              
+ [33] "فساد مالي"                                                                                                                                                                                                                                                                                                                                                        
+ [34] "عدم اهتمام واضح بهذا الحي"                                                                                                                                                                                                                                                                                                                                        
+ [35] "فساد مالي عدم اهتمام بالمواطن سوء اداره"                                                                                                                                                                                                                                                                                                                          
+ [36] "عدم اهتمام بهذه المنطقه"                                                                                                                                                                                                                                                                                                                                          
+ [37] "فساد إداري"                                                                                                                                                                                                                                                                                                                                                       
+ [38] "عدم توفير خدمه المياه  في المنطقه وضعف في تزويد خدمه وعدد ساعات اقل تجهيز للبيوت"                                                                                                                                                                                                                                                                                 
+ [39] "توفير مياه قليل جدا لا يكفي ال احتياجات الاسر"                                                                                                                                                                                                                                                                                                                    
+ [40] "منطقه مرتفعة  وضخ ماء ضعيف من مديرية مياه ولاتصل الي بيوت بصعوبه كبيرة"                                                                                                                                                                                                                                                                                           
+ [41] "شبكة الماء بحالة سيئه"                                                                                                                                                                                                                                                                                                                                            
+ [42] "لا يوجد اهتمام او تطوير من قبل الدائره لهذا الحي"                                                                                                                                                                                                                                                                                                                 
+ [43] "عدم اهتمام واضح بالحي"                                                                                                                                                                                                                                                                                                                                            
+ [44] "ضعف في ضغط الماء \r\nلا توجد عداله في التوزيع"                                                                                                                                                                                                                                                                                                                    
+ [45] "لانها بعيده عن مشروع ماء تلعفر\r\nوهناك توسع في احياء تلعفر"                                                                                                                                                                                                                                                                                                      
+ [46] "عدم انتظام في التوزيع\r\nضعف ضغط الماء\r\nمنطقتنا بعيده عن مشروع ماء تلعفر"                                                                                                                                                                                                                                                                                       
+ [47] "لان المنطقه بعيده عن المصدر \r\nولا ياتي الماء بشكل قوي"                                                                                                                                                                                                                                                                                                          
+ [48] "المشروع لا يكفي لسد قضاء تلعفر بلكامل"                                                                                                                                                                                                                                                                                                                            
+ [49] "الحي الذي نسكن فيه بعيد جدا عن مشروع ماء تلعفر\r\nبلاضافه الى الماء ضعيف"                                                                                                                                                                                                                                                                                         
+ [50] "عدم قدره دائره ماء تلعفر تغطيه المنطقه بالكامل \r\nضعف في توصيل الماء"                                                                                                                                                                                                                                                                                            
+ [51] "سوء التنظيم وقله ضغط الماء"                                                                                                                                                                                                                                                                                                                                       
+ [52] "لان المشروع لا يكفي لكل احياء تلعفر \r\nوازدادت كثافه السكان والمشروع بقي على نفس الحال"                                                                                                                                                                                                                                                                          
+ [53] "بسبب بعد المسافة عن الحي وقله ضغط الماء بشكل كبير في فتره الصيف وخاصه في تلك الايام"                                                                                                                                                                                                                                                                              
+ [54] "قلة المياه التي تضخ لهذا الحي.حيث يتم توزيع المياه لمرة واحدة في الاسبوع."                                                                                                                                                                                                                                                                                        
+ [55] "يتم توفير المياه لهذا الحي لمرة واحدة كل خمسة ايام.حيث لاتكفي لسد احتياجات سكان الحي."                                                                                                                                                                                                                                                                            
+ [56] "وذلك بسبب قلة المياه التي توفر للحي.بحيث يتم توفير المياه لمرة واحدة في الاسبوع حيث لاتكفي لسد احتياجات السكان."                                                                                                                                                                                                                                                  
+ [57] "لان الحي الذي نعيش فيه أعلى من بقيه الاحياء لذالك قل دفع الماء وافتقار إلى عمال صيانه ممتازين"                                                                                                                                                                                                                                                                    
+ [58] "موظف الدائره لا يفتح مضخه الماء بالكامل بل يقوم بفتح نصفها"                                                                                                                                                                                                                                                                                                       
+ [59] "يريدون مبالغ عاليه لا تتوفر لدينا \r\nولا يوجد فيها نائب في البرلمان"                                                                                                                                                                                                                                                                                             
+ [60] "لان الحي الذي اعلى من بقيه أحياء المنطقه\r\nو ايضا دفع الماء ضعيف"                                                                                                                                                                                                                                                                                                
+ [61] "العامل لا يفتح المضخه بشكل كامل"                                                                                                                                                                                                                                                                                                                                  
+ [62] "لايوجد فيها من يمثله وتفتقر الى الواسطه"                                                                                                                                                                                                                                                                                                                          
+ [63] "منطقه مرتفعه ويكون ضغط الماء ضعيف"                                                                                                                                                                                                                                                                                                                                
+ [64] "توفير الماء ليوم واحد في الاسبوع"                                                                                                                                                                                                                                                                                                                                 
+ [65] "المياه غير نضيفه"                                                                                                                                                                                                                                                                                                                                                 
+ [66] "عدم وجود واسطة وتوزيع المياه يكون بصورة غير عادلة بين منطقتنا مقارنة باخرى"                                                                                                                                                                                                                                                                                       
+ [67] "توزيع غير عادل بين الاحياء ولاتوجد واسطه بينهم"                                                                                                                                                                                                                                                                                                                   
+ [68] "المياه غير كافيه وتوزيع المياه بين الاحياء غير عادل ولاتوجد واسطه"                                                                                                                                                                                                                                                                                                
+ [69] "قله تجهيز الحي مثل باقي الاحياء وتوزيع غير عادل بين بقيه الاحياء"                                                                                                                                                                                                                                                                                                 
+ [70] "توزيع غير عادل بين الاحياء"                                                                                                                                                                                                                                                                                                                                       
+ [71] "عدم وجود واسطه في الحي وتجهيز غير عادل"                                                                                                                                                                                                                                                                                                                           
+ [72] "شبكة المياه في الكثير من الاضرار"                                                                                                                                                                                                                                                                                                                                 
+ [73] "سوء التوزيع \r\nمنطقه شعبيه ولا توجد واسطه \r\nالماء ضعيف"                                                                                                                                                                                                                                                                                                        
+ [74] "شبكه المياه ضعيفه جدا\r\nوقله ايام التزويد بالماء\r\nنطالب ولا من مستمع"                                                                                                                                                                                                                                                                                          
+ [75] "ضعف ضغط الماء بشكل كبير \r\nقله ايام تزويد الماء"                                                                                                                                                                                                                                                                                                                 
+ [76] "بسبب سد القفل المشروع \r\nولا يتم ضخ الماء بانتظام \r\nلا توجد واسطة"                                                                                                                                                                                                                                                                                             
+ [77] "يتم توفير المياه لايام وساعات اكثر في الاحياء المجاورة"                                                                                                                                                                                                                                                                                                           
+ [78] "يتم تزويدهم بلماء لايام وساعات اكثر مثل منطقة السلام وقرب سيطرة مدخل تلعفر"                                                                                                                                                                                                                                                                                       
+ [79] "يتم تزويد تلك المناطق بلماء لساعات وايام اكثر"                                                                                                                                                                                                                                                                                                                    
+ [80] "سوء شبكة المياه.وقلة ساعات امداد المياه للحي."                                                                                                                                                                                                                                                                                                                    
+ [81] "بسبب سوء شبكة المياه.وقلة عدد الايام التي يضخ فيها الماء للحي."                                                                                                                                                                                                                                                                                                   
+ [82] "كمية المياه التي توفر لهذا الحي قليلة جدا.بحيث يتم توفير المياه لمرة واحدة في الاسبوع."                                                                                                                                                                                                                                                                           
+ [83] "بسبب ضعف ضخ المياه للحي."                                                                                                                                                                                                                                                                                                                                         
+ [84] "دفع الماء ضعيف جدا"                                                                                                                                                                                                                                                                                                                                               
+ [85] "ضعيف جداً"                                                                                                                                                                                                                                                                                                                                                         
+ [86] "ولذلك بسبب ضعف كمية ضخ المياه لهذه المنطقة مقارنة ببقية المناطق.ايضا صغر حجم انبوب توزيع المياه لهذه المنطقة.مما يؤدي الى نقص الماء فيها."                                                                                                                                                                                                                        
+ [87] "بسبب قلة المياه التي توفر للحي.بالاضافة ان ضغط الماء ضعيف."                                                                                                                                                                                                                                                                                                       
+ [88] "بسبب قلة المياه التي توفر للحي وسوء شبكة المياه.وضعف الضخ."                                                                                                                                                                                                                                                                                                       
+ [89] "قلة المياه التي توفر لهذا الحي.حيث يتم توفير المياه مرة واحدة في الاسبوع."                                                                                                                                                                                                                                                                                        
+ [90] "كمية المياه المتوفرة للحي قليلة والضغط ضعيف."                                                                                                                                                                                                                                                                                                                     
+ [91] "لاياتي الماء لساعات كافيه في اليوم اضافه إلى انه يأتي الماء في الاسبوع يوم واحد"                                                                                                                                                                                                                                                                                  
+ [92] "تم توسيع الشبكة الخاصة بباقي الاحياء على حساب هذا الحي"                                                                                                                                                                                                                                                                                                           
+ [93] "بعد الحي عن مشروع الماء"                                                                                                                                                                                                                                                                                                                                          
+ [94] "قلة مصادر الماء"                                                                                                                                                                                                                                                                                                                                                  
+ [95] "قلة مشاريع الماء في تلعفر"                                                                                                                                                                                                                                                                                                                                        
+ [96] "ضعف في قوه دفع الماء ويصل الماء ضعيف"                                                                                                                                                                                                                                                                                                                             
+ [97] "الايام التي يأتي بها الماء قليله لا تكفي لسد حاجه اليوميه"                                                                                                                                                                                                                                                                                                        
+ [98] "المنطقه مكان مرتفع لا يصل الماء بسهوله"                                                                                                                                                                                                                                                                                                                           
+ [99] "ليس لديهم اي علم بالموضوع.وذلك لانهم لم يقوموا بزيارة الدائرة من قبل."                                                                                                                                                                                                                                                                                            
+[100] "بسبب ضعف شبكة المياه..او قفل بعض الشبكات التي تؤدي الى هذا الحي او باقي الاحياء المماثلة."                                                                                                                                                                                                                                                                        
+[101] "يتم توفير مياه قليلة لهذا الحي مقارنة بباقي الاحياء.والسبب في ذلك ان دائرة المياه تقوم بضخ كمية اقل لهذا الحي مقارنة ببقية الاحياء."                                                                                                                                                                                                                              
+[102] "لان اراضي الحي زراعية"                                                                                                                                                                                                                                                                                                                                            
+[103] "عدم وجود ساعات مياه مما يشجع الناس على الاسراف بالاضافة الى الانقطاع المستمر للكهرباء الوطنية"                                                                                                                                                                                                                                                                    
+[104] "كمية المياه التي توفر للحي قليلة لاتكفي لسد احتياجات سكان الحي."                                                                                                                                                                                                                                                                                                  
+[105] "بسبب قلة المياه التي توفر في الاسبوع.وضعف ضخ المياه."                                                                                                                                                                                                                                                                                                             
+[106] "قلة المياه التي توفر لهذا الحي.اضافة ان ضغط الماء ضعيف."                                                                                                                                                                                                                                                                                                          
+[107] "بسبب سوء شبكة المياه التي تغذي المنطقة."                                                                                                                                                                                                                                                                                                                          
+[108] "بسبب سوء شبكة المياه وقلة المياه المتوفرة في الحي."                                                                                                                                                                                                                                                                                                               
+[109] "لان الحي قديم والشبكات الماء أيضا قديمه \r\nوضعف في التوزيع\r\nوضعف في توصيل الماء بالكامل\r\nوضعف في قوة الماء"                                                                                                                                                                                                                                                  
+[110] "لايوجد من يمثل الحي لا مختار ولا نائب لجلب مشاريع الماء\r\nقله ضغط الماء بالكامل في حي القلعه\r\nقله ايام التزويد"                                                                                                                                                                                                                                                
+[111] "ضعف قوه الماء \r\nتوزيع غير منتظم في الحي يوجد اماكن فيها ماء وأماكن لايوجد فيها ماء لان المناطق عاليه والآخرى منخفضه"                                                                                                                                                                                                                                            
+[112] "توزيع غير عادل وتجهيز قليل جدا وتلف الشبكه لانه قديمه"                                                                                                                                                                                                                                                                                                            
+[113] "لاتوجد واسطه في المنطقه \r\nلايوجد من يمثلنا في الحي\r\nضعف في قوه دفع الماء"                                                                                                                                                                                                                                                                                     
+[114] "قله وضعف الماء بشكل كبير في فتره الصيف \r\nايام التزويد قليله ايضا"                                                                                                                                                                                                                                                                                               
+[115] "لا يوجد لدينا واسطه \r\nوالماء ضعيف جدا \r\nبالإضافة الى قله ايام التزويد"                                                                                                                                                                                                                                                                                        
+[116] "لا توجد واسطه في الحي وتجهيز قليل"                                                                                                                                                                                                                                                                                                                                
+[117] "لا اعلم"                                                                                                                                                                                                                                                                                                                                                          
+[118] "ضعف في مضخات المياه وعدم تحمل مشروع مياه تلعفر لتزويد المنطقه بلمياه"                                                                                                                                                                                                                                                                                             
+[119] "يتم توفير المياه لساعات اقل وباوقات غير ملائمة"                                                                                                                                                                                                                                                                                                                   
+[120] "يتم توفير المياه لايام اقل في حيننا"                                                                                                                                                                                                                                                                                                                              
+[121] "التقصير والتوزيع غير العادل على الاحياء وهناك مناطق يتم توفير المياه فيها ٢٤ ساعة ومناطق ٦ ساعات او اقل"                                                                                                                                                                                                                                                          
+[122] "ضغط الماء اقل من المناطق القريبة على المشروع ويتم توفير المياه في تلك المناطق لايام اكثر"                                                                                                                                                                                                                                                                         
+[123] "شبكة مياه المنطقة قديمة وكذلك تشترك مع منطقة اخرى بالمياه"                                                                                                                                                                                                                                                                                                        
+[124] "ضغط المياه قليلة"                                                                                                                                                                                                                                                                                                                                                 
+[125] "بعد الحي عن المشروع"                                                                                                                                                                                                                                                                                                                                              
+[126] "عدم اهتمام واضح من قبل الجهات المعنية لهذا الحي وقلة مصادر الماء"                                                                                                                                                                                                                                                                                                 
+[127] "عدم اهتمام واضح لهذا الحي"                                                                                                                                                                                                                                                                                                                                        
+[128] "دفع الماء يكون ضعيف جدا ولا تتوفر مضخه خاص بي\r\nويقع منزلي بعد عن الشبكه الرئيسيه"                                                                                                                                                                                                                                                                               
+[129] "ضعف ضغط المياه"                                                                                                                                                                                                                                                                                                                                                   
+[130] "بعد الخزنات الكبيرة لخزن المياه عنا وكذلك بعد  مصدر المياه الرئيسية عنا وبعد انابيب المياه الرئيسية عن الحي"                                                                                                                                                                                                                                                      
+[131] "ايام توفر الماء بالاسبوع اقل"                                                                                                                                                                                                                                                                                                                                     
+[132] "بسبب قرب تلك المناطق  على المشروع وعلى الانابيب الرئيسية للمشروع"                                                                                                                                                                                                                                                                                                 
+[133] "بسبب قرب تلك المناطق من مشروع الماء"                                                                                                                                                                                                                                                                                                                              
+[134] "التجاوزات الغير رسمية على الشبكة وكذلك وجود بعض الاشخاص الذين يتمتعون بالسلطة داخل القضاء"                                                                                                                                                                                                                                                                        
+[135] "كثرت التجاوزات على الشبكة احد الاسباب الذي اداء الى ذلك وكذلك عدم انتظام الجدول الزمني لتوزيع المياه على المناطق"                                                                                                                                                                                                                                                 
+[136] "لصغر حجم انابيب توزيع المياه."                                                                                                                                                                                                                                                                                                                                    
+[137] "بسبب صغر حجم انابيب ضخ المياه.اي ان شبكة انابيب المياه ضعيفة وقديمة."                                                                                                                                                                                                                                                                                             
+[138] "بسبب صغر حجم انابيب شبكة المياه مما يؤدي اي قلة المياه التي تصل الى هذه المنطقة.اضف عليها ان الضخ يكون مرة واحدة اسبوعيا.وهذا هو سبب قلة المياه في هذه المنطقة."                                                                                                                                                                                                  
+[139] "قله ايام إيصال الماء إلى المنطقه \r\nوقله ساعات تجهيز الماء بحيث لا تكفي لسد احتياجات\r\nولايوجد من يطالب الحكومة ومركز القضاء"                                                                                                                                                                                                                                   
+[140] "توزيع غير منتظم ولايوجد من يمثل المنطقه ولاتوجد واسطه"                                                                                                                                                                                                                                                                                                            
+[141] "لاتوجد واسطه في المنطقه تاتي بمشروع الماء الئ الحي\r\nضعف في قوه دفع الماء\r\nقله في ايام تزويد المنطقه بالماء"                                                                                                                                                                                                                                                   
+[142] "سوء توزيع الماء بشكل كبير في فتره الصيف \r\nوقله ضغط الماء"                                                                                                                                                                                                                                                                                                       
+[143] "لا توجد واسطه ومنطقه لاتوجد فيها ماء كافي وتوزيع غير منتظم"                                                                                                                                                                                                                                                                                                       
+[144] "كمية الماء لاتكفي لكافة القضاء ووجود المتجاوزين على الخط الرئيسي في ابو ماريا وحي العسكري والعلولية"                                                                                                                                                                                                                                                              
+[145] "التمييز بين الاحياء بسبب شخصيات سياسية...المقصد من كلامي على سبيل المثال..منطقة حي المثنى لاتحتوي على شخصية عسكرية او سياسية تسكن فيها..اما منطة العسكري على سبيل المثال يوجد فيها شخصيات سياسية او عسكرية لذا لايستطيعون قطع المياه عنهم خوفا منهم اما هذه المنطة لا يسكن فيها مثل هذه الشخصيات لذا يكون التقصير عليهم لعدم قدرتهم على التاثير على دائرة المياه."
+[146] "عدم اهتمام الحكومة ب مستلزمات المواطن"                                                                                                                                                                                                                                                                                                                            
+[147] "قلت عدد مشاريع الماء"                                                                                                                                                                                                                                                                                                                                             
+[148] "المنطقه عاليه  وتوزيع بين الأحياء غير عادل بحاجه الئ زياده المضخات"                                                                                                                                                                                                                                                                                               
+[149] "منطقه مرتفعه وعدم توزيع المياه بشكل عادل"                                                                                                                                                                                                                                                                                                                         
+[150] "منطقه عاليه \r\nلا يفتح مضخه الماء بالكامل\r\nتوزيع بين الأحياء غير عادل"                                                                                                                                                                                                                                                                                         
+[151] "منطقه عاليه\r\nقله ضخ المياه"                                                                                                                                                                                                                                                                                                                                     
+[152] "يوجد تمييز ومفاضلة بين حي واخر"                                                                                                                                                                                                                                                                                                                                   
+[153] "نظام التوزيع غير عادل وغير مدروس والتصميم للشبكة قديم"                                                                                                                                                                                                                                                                                                            
+[154] "خزان المياه غير كافي لجميع الاحياء والشبكة قديمة وكذلك الكهرباء ضعيفة وعدم وجود الواسطة لدى دائرة الماء"                                                                                                                                                                                                                                                          
+[155] "هناك واسطات بقيه أحياء مدينة ياخذون عصتنا من الماء\r\nمنطقه مرتفعه"                                                                                                                                                                                                                                                                                               
+[156] "لايوجد من يطالب بحقنا \r\nمنطقه مرتفعه"                                                                                                                                                                                                                                                                                                                           
+[157] "منطقه عاليه وتشغيل غير عادل بين الاحياء"                                                                                                                                                                                                                                                                                                                          
+[158] "عدد ايام توفر الماء اكثر في بعض احياء تلعفر  حي السلام"                                                                                                                                                                                                                                                                                                           
+[159] "بيتنا بنقطة مرتفعة وضغط الماء اقل من المناطق القريبة من المشروع"                                                                                                                                                                                                                                                                                                  
+[160] "بسبب ضغط الماء اقل و ايام توفير الماء اقل بلنسبة للمناطق الاخرى"                                                                                                                                                                                                                                                                                                  
+[161] "منطقه مرتفعه وبطيئه جدا وعدم انتظام توزيع المياه بين الاحياء ويجب تقويه المحركات"                                                                                                                                                                                                                                                                                 
+[162] "تعرض انابيب المياه والضاغطات التي تؤدي المياه للتلك المنطقه للتلف بسبب الحرب ولم يتم صيانتها ولم يتم تصليحها  لعدم توفر المواد الاوليه الخاصه بل مياه"                                                                                                                                                                                                            
+[163] "ضعف في ضاغطات المياه وكميات المياه قليلة"                                                                                                                                                                                                                                                                                                                         
+[164] "قام هذا المستفيد بزيارة دائرة تلعفر وكان الرد من الدائرة بان نقص في الخزان الرئيسي لقضاء تلعفر حيث لايوجد ضغط كافي لوصول المياه الى هذه المنطقة وان السبب الاخر هو ضعف في المضخة الرئيسية"                                                                                                                                                                        
+[165] "دائرة مياه تلعفر عند مراجعة احد افراد المنطقة تذكر لنا الاسباب التالية بان نقص في الكهرباء ونقص الخزان الرئيسي للمياه"                                                                                                                                                                                                                                            
+[166] "وذلك بسبب وجود بعض الاشخاص في بعض المناطق الذين يتمتعون بوجود علاقات مع بعض الموظفين في دائرة مياه تلعفر"                                                                                                                                                                                                                                                         
+[167] "وجود العلاقات مع بعض الاشخاص الذين يتمتعون بالنفوذ داخل تلعفر هو سبب رئيسي في هذه المشكلة"                                                                                                                                                                                                                                                                        
+[168] "بعد المنطقة عن الخزان الرئيسي وكذلك الامداد غير منتظم وهذا الموقع على ارتفاع يصعب الوصول السريع للمياه"                                                                                                                                                                                                                                                           
+[169] "بسبب قلة المياه المتوفرة لهذا الحي،وضعف مشروع قضاء تلعفر بشكل عام،حيث لايكفي لسد حاجة القضاء بالكامل،لحل هذه المشكلة يجب انشاء مشروع ثاني او تطوير المشروع الحالي."                                                                                                                                                                                               
+[170] "بسبب سوء شبكة امداد المياه،وقلة المياه المتوفرة من قبل الدائرة،والسبب في ذلك هو ضعف مشروع المياه بشكل عام."                                                                                                                                                                                                                                                       
+[171] "بعد الحي عن مشروع الماء وقلة مصادر الماء"                                                                                                                                                                                                                                                                                                                         
+[172] "عدم اهتمام واضح بالحي وبعد مشروع الماء وقلة مصادر الماء"                                                                                                                                                                                                                                                                                                          
+[173] "المنطقه مرتفعه ويكون ضغط الماء ضعيف\r\nتقع المنطقه بعيدا جدا عن الخط الرئيسي\r\nشبكه المياه قديمه جدا"                                                                                                                                                                                                                                                            
+[174] "شبكة الماء الخاصة بهذا الحي قديمة"                                                                                                                                                                                                                                                                                                                                
+[175] "ليس هناك ضغط يكفي لايصال المياه الى المنطقة وكذلك وجود قفل رئيسي لا يفتح بصورة صحيحة"                                                                                                                                                                                                                                                                             
+[176] "وذلك بسبب الجدول الزمني المقرر من قبل دائرة مياه تلعفر في توزيع المياه من حيث عدد الساعات والايام"                                                                                                                                                                                                                                                                
+[177] "عدم وجود اشخاص في قائمقامية تلعفر يمثلوننا للمطالبة ب ابسط حقوقنا"                                                                                                                                                                                                                                                                                                
+[178] "عدم الاهتمام من قبل دائرة ماء تلعفر لهذا الحي"                                                                                                                                                                                                                                                                                                                    
+[179] "شبكة الماء سيئه جدا"                                                                                                                                                                                                                                                                                                                                              
+[180] "المشروع بعيد عن الحي"                                                                                                                                                                                                                                                                                                                                             
+[181] "البنى التحتية للمشروع سيئه وعدم وجود انابيب تصل الى الحي"                                                                                                                                                                                                                                                                                                         
+[182] "بعد مشروع الماء عن الحي والحالة ل أنابيب الماء سيئة جدا"                                                                                                                                                                                                                                                                                                          
+[183] "لانها تقع أطراف القضاء \r\nولا يوجد فيها ماء كافي"                                                                                                                                                                                                                                                                                                                
+[184] "منطقه كبيره وتوزيع غير منتظم ولا فيه عداله"                                                                                                                                                                                                                                                                                                                       
+[185] "حي مبني على اراضي زراعية"                                                                                                                                                                                                                                                                                                                                         
+[186] "ضعف في ضغط المياه"                                                                                                                                                                                                                                                                                                                                                
+[187] "يتم توفير الماء بشبكة الانابيب لايام اقل"                                                                                                                                                                                                                                                                                                                         
+[188] "يتم توفير المياه لمناطق التي تقع في داخل الحدود البلدية لتلعفر لايام اكثر"                                                                                                                                                                                                                                                                                        
+[189] "يتم توفير المياه بالاحياء الاخرى لايام اكثر"                                                                                                                                                                                                                                                                                                                      
+[190] "يتم توفير الماء في حيننا لأيام اقل وعدد ساعات اقل"                                                                                                                                                                                                                                                                                                                
+[191] "توزيع غير منتظم بين الأحياء\r\nولاتوجد من يمثل المنطقه\r\nولاتوجد كهرباء كافيه لايصال الماء بصوره صحيحه"                                                                                                                                                                                                                                                          
+[192] "بعد المصدر الرئيسي للمياه عن  المنطقة وعدم امداد المنطقة بالمياه لساعات وايام  كافية بالاسبوع"                                                                                                                                                                                                                                                                    
+[193] "لان المنطقة خارج حدود البلدية وبعيدة عن المصدر الرئيسي للمياه"                                                                                                                                                                                                                                                                                                    
+[194] "مصدر المياه غير كافي\r\nولاتوجد واسطه في الحي\r\nوتوزيع المياه غير عادل"                                                                                                                                                                                                                                                                                          
+[195] "وذالك لبعد المسافة عن مشروع ماء تلعفر\r\nولا يصل الماء الينا بالكامل\r\nضعف في ضغط الماء\r\nضعف في توزيع الماء على أحياء تلعفر"                                                                                                                                                                                                                                   
+[196] "لان الحي الذي نسكن به يقع في نهايه القضاء \r\nوياتي الماء ضعيف بسبب البعد عن المشروع"                                                                                                                                                                                                                                                                             
+[197] "قلة المياه التي توفر لهذا الحي،حيث يتم توفير المياه لمرة واحدة في الاسبوع،بالاضافة ان ضغط الماء ضعيف."                                                                                                                                                                                                                                                            
+[198] "حيث لا يتم توفير المياه بصورة منتظمة مقارنة مع باقي الاحياء الموجودة حيث يوجد مناطق تتواجد فيها المياه بشكل يومي عكس هذا الحي يتي الماء يوم واحد بالاسبوع \r\n"                                                                                                                                                                                                   
+[199] "هذه المنطقة تفتقر الى امدادات الشبكة بصورة منظمة حيث لا يتوفر الماء الا مرة واحدة كل خمسة ايام مقارنة مع باقي المناطق"                                                                                                                                                                                                                                            
+[200] "هذه المنطقة تعتمد على شبكات المياه القديمة وهنالك بعض المناطق تعمد على الشبكة الجديدة فيتوفر الماء فيها بصورة افضل من هذه المنطقة"                                                                                                                                                                                                                                
+[201] "كون المنطقة تقع في بداية تلعفر وتفتقر الى شبكة امدادات جديدة"                                                                                                                                                                                                                                                                                                     
+[202] "خارج حدود البلدية/ البيت تجاوز"                                                                                                                                                                                                                                                                                                                                   
+[203] "المنطقه جديده \r\nوالشبكه اقوى \r\n"                                                                                                                                                                                                                                                                                                                              
+[204] "منطقه حديثه \r\nقله ايام الذي يأتي فيها الماء"                                                                                                                                                                                                                                                                                                                    
+[205] "دفع الماء ضعيف جدا\r\nساعات التجهيز تكون اقل من داخل تلعفر"                                                                                                                                                                                                                                                                                                       
+[206] "منطقه حديثه \r\nلايتم ايصال المياه بشكل عادل"                                                                                                                                                                                                                                                                                                                     
+[207] "بسبب توزيع المياه وتوزيع غير عادل بين بقيه الاحياء"                                                                                                                                                                                                                                                                                                               
+[208] "توزيع المياه غير عادل بين الأحياء"                                                                                                                                                                                                                                                                                                                                
+[209] "بسبب صغر حجم انابيب المياه.بالاضافة ان الموظفين المسؤولين عن مشروع المياه يقومون بقفل الانابيب وقطع المياه عن المنطقة بسبب قلة المياه التي توفرها الدائرة."                                                                                                                                                                                                       
+[210] "بسبب ضعف شبكة المياه في الحي."                                                                                                                                                                                                                                                                                                                                    
+[211] "بسبب صغر حجم انابيب شبكة المياه بالاضافة الى ذلك قلة ضخ المياه لهذه المنطقة."                                                                                                                                                                                                                                                                                     
+[212] "صغر حجم انابيب المياه وضعف ضخ المياه لهذه المنطقة.بالاضافة ان كمية المياه التي يوفرها مشروع المياه قليل جدا لايكفي لسد احتياجات المنطقة."                                                                                                                                                                                                                         
+[213] "لانعلم ماهو السبب"                                                                                                                                                                                                                                                                                                                                                
+[214] "خارج حدود البلدية"                                                                                                                                                                                                                                                                                                                                                
+[215] "لا نملك واسطة لدى دائرة المياه"                                                                                                                                                                                                                                                                                                                                   
+[216] "وذلك بسبب ارتفاع المنطقة عن باقي المناطق وقلة ضغط المياه تسبب ذلك اضافة الى قلة المصادر"                                                                                                                                                                                                                                                                          
+[217] "وذلك بسبب بعد المنطقة وارتفاعها عن المشروع  ليس هناك ضغط كافي لوصول المياه بشكل افضل كباقي المناطق"                                                                                                                                                                                                                                                               
+[218] "داخل تلعفر هناك مناطق يتم فيها تزويد المياه بشكل مستمر"                                                                                                                                                                                                                                                                                                           
+[219] "الموظفين بلمشروع غير مقصرين ولكن لاتوجد كهرباء كافية لتشغيل مضخات المشروع"                                                                                                                                                                                                                                                                                        
+[220] "لاياتي الماء لساعات كافيه أضافه إلى أنه يأتي الماء في الأسبوع مره واحده"                                                                                                                                                                                                                                                                                          
+[221] "وذلك بسبب ضغط المياه قليل وكذلك كمية المياه وعدد الايام في الاسبوع قليل"                                                                                                                                                                                                                                                                                          
+
+$consent_telephone_number
+[1] "yes" "no" </code></pre>
 </div>
 </div>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>  cleann <span class="sc">%&gt;%</span> </span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="fu">any_of</span>(list_log<span class="sc">$</span>potential_PII<span class="sc">$</span>question)) <span class="sc">%&gt;%</span> </span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lapply</span>(unique)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>  cleann <span class="sc">%&gt;%</span> </span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="fu">any_of</span>(list_log<span class="sc">$</span>potential_PII<span class="sc">$</span>question)) <span class="sc">%&gt;%</span> </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lapply</span>(unique)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>$neighbourhood
@@ -545,24 +757,24 @@ $consent_telephone_number
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>lower_treshold <span class="ot">&lt;-</span> <span class="dv">15</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>higher_threshold <span class="ot">&lt;-</span> <span class="dv">100</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (check_for_time) {</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  list_log<span class="sc">$</span>checked_dataset <span class="ot">&lt;-</span> list_log<span class="sc">$</span>checked_dataset <span class="sc">|&gt;</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">add_duration</span>(<span class="at">uuid_column  =</span> uuid_cleann, </span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">start_column =</span> <span class="st">"X.U.FEFF.start"</span>, </span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>                 <span class="at">end_column =</span> <span class="st">"end"</span>)</span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  list_log <span class="ot">&lt;-</span> list_log <span class="sc">|&gt;</span></span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">check_duration</span>(</span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">column_to_check =</span> <span class="st">"duration"</span>,</span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">uuid_column  =</span> uuid_cleann,</span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">lower_bound =</span> lower_treshold,</span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">higher_bound =</span> higher_threshold</span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print_log</span>(list_log<span class="sc">$</span>duration_log, <span class="st">"No time sensitive interviews found"</span>)</span>
-<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>lower_treshold <span class="ot">&lt;-</span> <span class="dv">15</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>higher_threshold <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (check_for_time) {</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  list_log<span class="sc">$</span>checked_dataset <span class="ot">&lt;-</span> list_log<span class="sc">$</span>checked_dataset <span class="sc">|&gt;</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">add_duration</span>(<span class="at">uuid_column  =</span> uuid_cleann, </span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">start_column =</span> <span class="st">"X.U.FEFF.start"</span>, </span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>                 <span class="at">end_column =</span> <span class="st">"end"</span>)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  list_log <span class="ot">&lt;-</span> list_log <span class="sc">|&gt;</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">check_duration</span>(</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">column_to_check =</span> <span class="st">"duration"</span>,</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">uuid_column  =</span> uuid_cleann,</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">lower_bound =</span> lower_treshold,</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">higher_bound =</span> higher_threshold</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print_log</span>(list_log<span class="sc">$</span>duration_log, <span class="st">"No time sensitive interviews found"</span>)</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:500px; ">
@@ -1057,28 +1269,28 @@ $consent_telephone_number
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># take only select and integer to look at NA (removing text, dummies, notes, etc.)</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (check_for_shortest_path) {</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">exists</span>(<span class="st">"questions"</span>)) {</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    list_log<span class="sc">$</span>checked_dataset <span class="ot">&lt;-</span> list_log<span class="sc">$</span>checked_dataset <span class="sc">|&gt;</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">add_percentage_missing</span>(</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">kobo_survey =</span> questions,</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">type_to_include =</span> <span class="fu">c</span>(</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>          <span class="st">"integer"</span>,</span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>          <span class="co"># "date",</span></span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>          <span class="st">"text"</span>,</span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>          <span class="st">"select_one"</span>,</span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>          <span class="st">"select_multiple"</span></span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>      )</span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
-<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>    list_log<span class="sc">$</span>checked_dataset <span class="ot">&lt;-</span> list_log<span class="sc">$</span>checked_dataset <span class="sc">|&gt;</span></span>
-<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>      <span class="fu">add_percentage_missing</span>()</span>
-<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>  list_log <span class="ot">&lt;-</span> list_log <span class="sc">|&gt;</span></span>
-<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">check_percentage_missing</span>(<span class="at">uuid_column =</span> uuid_cleann)</span>
-<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print_log</span>(list_log<span class="sc">$</span>percentage_missing_log, <span class="st">"No survey with outstanding blanks found"</span>)</span>
-<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># take only select and integer to look at NA (removing text, dummies, notes, etc.)</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (check_for_shortest_path) {</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">exists</span>(<span class="st">"questions"</span>)) {</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    list_log<span class="sc">$</span>checked_dataset <span class="ot">&lt;-</span> list_log<span class="sc">$</span>checked_dataset <span class="sc">|&gt;</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">add_percentage_missing</span>(</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">kobo_survey =</span> questions,</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">type_to_include =</span> <span class="fu">c</span>(</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>          <span class="st">"integer"</span>,</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>          <span class="co"># "date",</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>          <span class="st">"text"</span>,</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>          <span class="st">"select_one"</span>,</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>          <span class="st">"select_multiple"</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>    list_log<span class="sc">$</span>checked_dataset <span class="ot">&lt;-</span> list_log<span class="sc">$</span>checked_dataset <span class="sc">|&gt;</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>      <span class="fu">add_percentage_missing</span>()</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>  list_log <span class="ot">&lt;-</span> list_log <span class="sc">|&gt;</span></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">check_percentage_missing</span>(<span class="at">uuid_column =</span> uuid_cleann)</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print_log</span>(list_log<span class="sc">$</span>percentage_missing_log, <span class="st">"No survey with outstanding blanks found"</span>)</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "checking_percentage_missing"</code></pre>
@@ -1424,22 +1636,22 @@ $consent_telephone_number
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (check_for_outliers) {</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  list_log <span class="ot">&lt;-</span> cleaningtools<span class="sc">::</span><span class="fu">check_outliers</span>(<span class="at">dataset =</span> list_log,</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">uuid_column  =</span> uuid_cleann,</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">kobo_survey =</span> questions,</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">kobo_choices =</span> choices,</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">sm_separator =</span> sm_separator</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (check_for_outliers) {</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  list_log <span class="ot">&lt;-</span> cleaningtools<span class="sc">::</span><span class="fu">check_outliers</span>(<span class="at">dataset =</span> list_log,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">uuid_column  =</span> uuid_cleann,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">kobo_survey =</span> questions,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">kobo_choices =</span> choices,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">sm_separator =</span> sm_separator</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (check_for_outliers) {</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print_log</span>(list_log<span class="sc">$</span>potential_outliers, <span class="st">"No outlier found"</span>)</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (check_for_outliers) {</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print_log</span>(list_log<span class="sc">$</span>potential_outliers, <span class="st">"No outlier found"</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:500px; ">
@@ -2922,25 +3134,25 @@ $consent_telephone_number
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (check_for_logical) {</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  list_log <span class="ot">&lt;-</span> list_log <span class="sc">|&gt;</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">check_logical_with_list</span>(</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">uuid_column  =</span> uuid_cleann,</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">list_of_check =</span> logical_check_list, </span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">check_id_column =</span> check_id_column, </span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">description_column =</span> description_column,</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">check_to_perform_column =</span> check_to_perform_column,</span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">columns_to_clean_column =</span> columns_to_clean_column</span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  list_log<span class="sc">$</span>checked_dataset <span class="sc">%&gt;%</span> </span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="at">.cols =</span> <span class="fu">any_of</span>(logical_check_list[[check_id_column]]), <span class="at">.fns =</span> <span class="sc">~</span><span class="fu">mean</span>(.x, <span class="at">na.rm =</span> T) <span class="sc">*</span><span class="dv">100</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">everything</span>()) <span class="sc">%&gt;%</span> </span>
-<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(<span class="fu">desc</span>(value)) <span class="sc">%&gt;%</span> </span>
-<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="at">logical_checks =</span> name, </span>
-<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>           <span class="at">percent_of_dataset =</span> value)</span>
-<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (check_for_logical) {</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  list_log <span class="ot">&lt;-</span> list_log <span class="sc">|&gt;</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">check_logical_with_list</span>(</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">uuid_column  =</span> uuid_cleann,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">list_of_check =</span> logical_check_list, </span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">check_id_column =</span> check_id_column, </span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">description_column =</span> description_column,</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">check_to_perform_column =</span> check_to_perform_column,</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">columns_to_clean_column =</span> columns_to_clean_column</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  list_log<span class="sc">$</span>checked_dataset <span class="sc">%&gt;%</span> </span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="at">.cols =</span> <span class="fu">any_of</span>(logical_check_list[[check_id_column]]), <span class="at">.fns =</span> <span class="sc">~</span><span class="fu">mean</span>(.x, <span class="at">na.rm =</span> T) <span class="sc">*</span><span class="dv">100</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">everything</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(<span class="fu">desc</span>(value)) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="at">logical_checks =</span> name, </span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>           <span class="at">percent_of_dataset =</span> value)</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 2
@@ -2954,7 +3166,7 @@ $consent_telephone_number
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print_log</span>(list_log<span class="sc">$</span>logical_all, <span class="st">"No logical checks found"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print_log</span>(list_log<span class="sc">$</span>logical_all, <span class="st">"No logical checks found"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:500px; ">
@@ -5702,31 +5914,31 @@ $consent_telephone_number
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (check_for_others) {</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">exists</span>(<span class="st">"questions"</span>)) {</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    text_oth <span class="ot">&lt;-</span> questions <span class="sc">|&gt;</span></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">filter</span>(type <span class="sc">==</span> <span class="st">"text"</span>, name <span class="sc">%in%</span> <span class="fu">names</span>(cleann)) <span class="sc">|&gt;</span></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">pull</span>(name)</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    text_oth <span class="ot">&lt;-</span> <span class="fu">grep</span>(<span class="at">pattern =</span> <span class="st">"_oth|_other|_autre"</span>, <span class="at">x =</span> <span class="fu">names</span>(cleann), <span class="at">value =</span> T)</span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  list_log <span class="ot">&lt;-</span> list_log <span class="sc">|&gt;</span></span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">check_others</span>(</span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">uuid_column =</span> uuid_cleann,</span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">columns_to_check =</span> text_oth</span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (check_for_others) {</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">exists</span>(<span class="st">"questions"</span>)) {</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    text_oth <span class="ot">&lt;-</span> questions <span class="sc">|&gt;</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">filter</span>(type <span class="sc">==</span> <span class="st">"text"</span>, name <span class="sc">%in%</span> <span class="fu">names</span>(cleann)) <span class="sc">|&gt;</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">pull</span>(name)</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    text_oth <span class="ot">&lt;-</span> <span class="fu">grep</span>(<span class="at">pattern =</span> <span class="st">"_oth|_other|_autre"</span>, <span class="at">x =</span> <span class="fu">names</span>(cleann), <span class="at">value =</span> T)</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  list_log <span class="ot">&lt;-</span> list_log <span class="sc">|&gt;</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">check_others</span>(</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">uuid_column =</span> uuid_cleann,</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">columns_to_check =</span> text_oth</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p><br> <br> This is all the values from text questions.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (check_for_others) {</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  list_log<span class="sc">$</span>other_log <span class="sc">|&gt;</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">arrange</span>(question, old_value) <span class="sc">|&gt;</span></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">knit_big_table</span>()</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (check_for_others) {</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  list_log<span class="sc">$</span>other_log <span class="sc">|&gt;</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">arrange</span>(question, old_value) <span class="sc">|&gt;</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">knit_big_table</span>()</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:500px; ">
@@ -8228,12 +8440,12 @@ $consent_telephone_number
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (check_for_others) {</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  list_log<span class="sc">$</span>other_log <span class="sc">|&gt;</span></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">group_by</span>(question) <span class="sc">|&gt;</span></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">tally</span>(<span class="at">sort =</span> T) <span class="sc">|&gt;</span></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">knit_big_table</span>()</span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (check_for_others) {</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  list_log<span class="sc">$</span>other_log <span class="sc">|&gt;</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">group_by</span>(question) <span class="sc">|&gt;</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">tally</span>(<span class="at">sort =</span> T) <span class="sc">|&gt;</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">knit_big_table</span>()</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:500px; ">
@@ -8299,12 +8511,12 @@ $consent_telephone_number
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (check_for_others) {</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  list_log<span class="sc">$</span>other_log <span class="sc">|&gt;</span></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">group_by</span>(old_value) <span class="sc">|&gt;</span></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">tally</span>(<span class="at">sort =</span> T) <span class="sc">|&gt;</span></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">knit_big_table</span>()</span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (check_for_others) {</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  list_log<span class="sc">$</span>other_log <span class="sc">|&gt;</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">group_by</span>(old_value) <span class="sc">|&gt;</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">tally</span>(<span class="at">sort =</span> T) <span class="sc">|&gt;</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">knit_big_table</span>()</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:500px; ">
@@ -9879,20 +10091,20 @@ $consent_telephone_number
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (check_for_NA_values) {</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  values_to_check <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">99</span>, <span class="dv">999</span>, <span class="dv">999</span>, <span class="dv">88</span>, <span class="dv">888</span>, <span class="dv">888</span>)</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  list_log <span class="ot">&lt;-</span> list_log <span class="sc">|&gt;</span></span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">check_value</span>( </span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">uuid_column =</span> uuid_cleann,</span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">values_to_look =</span> values_to_check</span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># fix for check not adding issue</span></span>
-<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>  list_log<span class="sc">$</span>flaged_value<span class="sc">$</span>issue <span class="ot">&lt;-</span> <span class="st">"Possible value to be changed to NA"</span></span>
-<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print_log</span>(list_log<span class="sc">$</span>flaged_value, <span class="st">"No values found"</span>)</span>
-<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (check_for_NA_values) {</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  values_to_check <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">99</span>, <span class="dv">999</span>, <span class="dv">999</span>, <span class="dv">88</span>, <span class="dv">888</span>, <span class="dv">888</span>)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  list_log <span class="ot">&lt;-</span> list_log <span class="sc">|&gt;</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">check_value</span>( </span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">uuid_column =</span> uuid_cleann,</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">values_to_look =</span> values_to_check</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># fix for check not adding issue</span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>  list_log<span class="sc">$</span>flaged_value<span class="sc">$</span>issue <span class="ot">&lt;-</span> <span class="st">"Possible value to be changed to NA"</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print_log</span>(list_log<span class="sc">$</span>flaged_value, <span class="st">"No values found"</span>)</span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:500px; ">
@@ -9931,22 +10143,22 @@ $consent_telephone_number
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>number_cleann_in_dell <span class="ot">&lt;-</span> <span class="st">"Check not performed"</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>number_dell_in_cleann <span class="ot">&lt;-</span> <span class="st">"Check not performed"</span></span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>number_difference_raw_clean_del <span class="ot">&lt;-</span> <span class="st">"Check not performed"</span></span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (check_for_deletions) {</span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_raw =</span> <span class="fu">nrow</span>(raww),</span>
-<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_clean =</span> <span class="fu">nrow</span>(cleann),</span>
-<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_deleted =</span> <span class="fu">nrow</span>(dell),</span>
-<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">sum_clean_del =</span> <span class="fu">nrow</span>(cleann) <span class="sc">+</span> <span class="fu">nrow</span>(dell)</span>
-<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>  number_cleann_in_dell <span class="ot">&lt;-</span> cleann[[uuid_cleann]] <span class="sc">%in%</span> dell[[uuid_dell]] <span class="sc">|&gt;</span> <span class="fu">sum</span>()</span>
-<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>  number_dell_in_cleann <span class="ot">&lt;-</span> dell[[uuid_dell]] <span class="sc">%in%</span> cleann[[uuid_cleann]] <span class="sc">|&gt;</span> <span class="fu">sum</span>()</span>
-<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>  number_difference_raw_clean_del <span class="ot">&lt;-</span> <span class="fu">abs</span>(<span class="fu">nrow</span>(raww) <span class="sc">-</span> <span class="fu">nrow</span>(cleann) <span class="sc">-</span> <span class="fu">nrow</span>(dell))</span>
-<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>number_cleann_in_dell <span class="ot">&lt;-</span> <span class="st">"Check not performed"</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>number_dell_in_cleann <span class="ot">&lt;-</span> <span class="st">"Check not performed"</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>number_difference_raw_clean_del <span class="ot">&lt;-</span> <span class="st">"Check not performed"</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (check_for_deletions) {</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_raw =</span> <span class="fu">nrow</span>(raww),</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_clean =</span> <span class="fu">nrow</span>(cleann),</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_deleted =</span> <span class="fu">nrow</span>(dell),</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">sum_clean_del =</span> <span class="fu">nrow</span>(cleann) <span class="sc">+</span> <span class="fu">nrow</span>(dell)</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>  number_cleann_in_dell <span class="ot">&lt;-</span> cleann[[uuid_cleann]] <span class="sc">%in%</span> dell[[uuid_dell]] <span class="sc">|&gt;</span> <span class="fu">sum</span>()</span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>  number_dell_in_cleann <span class="ot">&lt;-</span> dell[[uuid_dell]] <span class="sc">%in%</span> cleann[[uuid_cleann]] <span class="sc">|&gt;</span> <span class="fu">sum</span>()</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>  number_difference_raw_clean_del <span class="ot">&lt;-</span> <span class="fu">abs</span>(<span class="fu">nrow</span>(raww) <span class="sc">-</span> <span class="fu">nrow</span>(cleann) <span class="sc">-</span> <span class="fu">nrow</span>(dell))</span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Difference between of rows between the raw, clean and deletion log: 1<br>
@@ -9995,11 +10207,11 @@ Number of uuid of deleted in clean : 0</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (review_the_cleaning_log) {</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  review_log<span class="sc">$</span>review_cleaning <span class="sc">|&gt;</span></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">group_by</span>(comment) <span class="sc">|&gt;</span></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">tally</span>()</span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (review_the_cleaning_log) {</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  review_log<span class="sc">$</span>review_cleaning <span class="sc">|&gt;</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">group_by</span>(comment) <span class="sc">|&gt;</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">tally</span>()</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 2
@@ -10017,13 +10229,13 @@ Number of uuid of deleted in clean : 0</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (review_the_others_recoding) {</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  review_log<span class="sc">$</span>review_the_others_log <span class="ot">&lt;-</span> <span class="fu">review_others</span>(<span class="at">dataset =</span> cleann,</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">uuid_column =</span> uuid_cleann,</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">kobo_survey =</span> questions,</span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">sm_separator =</span> sm_separator</span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (review_the_others_recoding) {</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  review_log<span class="sc">$</span>review_the_others_log <span class="ot">&lt;-</span> <span class="fu">review_others</span>(<span class="at">dataset =</span> cleann,</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">uuid_column =</span> uuid_cleann,</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">kobo_survey =</span> questions,</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">sm_separator =</span> sm_separator</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in create_logic_for_other(kobo_survey = kobo_survey,
@@ -10036,11 +10248,11 @@ found in the dataset. The function is ignoring them.</code></pre>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (review_the_others_recoding) {</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  review_log<span class="sc">$</span>review_the_others_log <span class="sc">|&gt;</span></span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">group_by</span>(issue) <span class="sc">|&gt;</span></span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">tally</span>()</span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (review_the_others_recoding) {</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  review_log<span class="sc">$</span>review_the_others_log <span class="sc">|&gt;</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">group_by</span>(issue) <span class="sc">|&gt;</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">tally</span>()</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 2
@@ -10054,19 +10266,19 @@ found in the dataset. The function is ignoring them.</code></pre>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (review_the_sampling_frame) {</span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  review_log<span class="sc">$</span>review_sf <span class="ot">&lt;-</span> <span class="fu">review_sample_frame_with_dataset</span>(</span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">sample_frame =</span> sampling_frame,</span>
-<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">sampling_frame_strata_column =</span> sample_frame_strata_column,</span>
-<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">sampling_frame_target_survey_column =</span> sample_frame_target_survey_column,</span>
-<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">clean_dataset =</span> cleann,</span>
-<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">clean_dataset_strata_column =</span> clean_data_strata_column,</span>
-<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">consent_column =</span> clean_data_consent_column,</span>
-<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">consent_yes_value =</span> clean_data_consent_yes_value</span>
-<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>  review_log<span class="sc">$</span>review_sf</span>
-<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (review_the_sampling_frame) {</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  review_log<span class="sc">$</span>review_sf <span class="ot">&lt;-</span> <span class="fu">review_sample_frame_with_dataset</span>(</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">sample_frame =</span> sampling_frame,</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">sampling_frame_strata_column =</span> sample_frame_strata_column,</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">sampling_frame_target_survey_column =</span> sample_frame_target_survey_column,</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">clean_dataset =</span> cleann,</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">clean_dataset_strata_column =</span> clean_data_strata_column,</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">consent_column =</span> clean_data_consent_column,</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">consent_yes_value =</span> clean_data_consent_yes_value</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>  review_log<span class="sc">$</span>review_sf</span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in review_sample_frame_with_dataset(sample_frame = sampling_frame, :
@@ -10130,15 +10342,15 @@ Dataset has Collected/Renaming column already, which will be replaced.</code></p
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>all_logs <span class="ot">&lt;-</span> <span class="fu">create_combined_log</span>(list_log) <span class="sc">|&gt;</span></span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">append</span>(review_log)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>all_logs <span class="ot">&lt;-</span> <span class="fu">create_combined_log</span>(list_log) <span class="sc">|&gt;</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">append</span>(review_log)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>List of element to combine- checked_dataset, duplicate_log, soft_duplicate_log, potential_PII, duration_log, percentage_missing_log, potential_outliers, logical_all, other_log, flaged_value</code></pre>
 </div>
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>openxlsx2<span class="sc">::</span><span class="fu">write_xlsx</span>(all_logs, <span class="at">file =</span> <span class="st">"outputs/review.xlsx"</span>, <span class="at">overwrite =</span> T, <span class="at">na.strings =</span> <span class="st">""</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>openxlsx2<span class="sc">::</span><span class="fu">write_xlsx</span>(all_logs, <span class="at">file =</span> <span class="st">"outputs/review.xlsx"</span>, <span class="at">overwrite =</span> T, <span class="at">na.strings =</span> <span class="st">""</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </div>

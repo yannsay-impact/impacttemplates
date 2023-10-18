@@ -39,11 +39,11 @@ devtools::install_github("impact-initiatives/impacttemplates")
 
 ![](man/figures/01-createproject.png){width="500"}
 
-### Cleaning review template
-
--   If you select Cleaning review template, you need to give the name of the project folder and the subdirectory of it.
+-   If you select Cleaning/Analysis review template, you need to give the name of the project folder and the sub directory of it.
 
 [![](man/figures/02-createcleaningreviewtemplate.png){width="500"}](Create%20a%20cleaning%20review%20template)
+
+### Cleaning review template
 
 -   This will create a new folder with your project. It opens a **config.R** file where you can input several information such as :
 
@@ -80,6 +80,37 @@ Don't forget to save.
 ![](man/figures/05-htmloutput.png){width="500"}
 
 ![](man/figures/06-exceloutput.png){width="500"}
+
+### Analysis review template
+
+-   This will create a new folder with your project. It opens a **config.R** file where you can input several information such as :
+
+    -   results table to be reviewed
+
+    -   dataset to be used to re-calculate
+
+    -   names of the analysis key column and weights
+
+    -   select multiple separator
+
+    -   creating the survey design
+
+Don't forget to save.
+
+-   There is then a quarto file **analysis_review_template.qmd**. It is a step by step process to 
+recreate, bind and review the analysis.
+
+-   You can click on render to render a file.
+
+    -   There is a block to be updated manually where you have to input the correct names of columns to be used and compared with.
+
+![](man/figures/07-configanalysis.png){width="500"}
+
+![](man/figures/08-analysisquartoupdate.png){width="500"}
+
+-   Once render, this will create an html output that you can navigate to read the results of review. It will also write an excel file in your outputs folder with the results tables with all the checks, and review.
+
+![](man/figures/09-analysishtmloutput.png){width="500"}
 
 ## Code of Conduct
 
